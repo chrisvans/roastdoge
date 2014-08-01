@@ -45,8 +45,8 @@ function lineChartVisualization(options) {
       visualization.nvchart.yAxis
         .axisLabel(visualization.yAxisLabel || 'Temperature')
         .tickFormat( function(d) {
-            formatted_tick = d3.format(',.1f')(d);
-            return formatted_tick + ' F';
+          formatted_tick = d3.format(',.1f')(d);
+          return formatted_tick + ' F';
         });
 
       d3.select(visualization.selectElement)

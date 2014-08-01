@@ -30,6 +30,7 @@ class RoastProfile(models.Model):
                     {
                     'x':temp_point.time,
                     'y':float(temp_point.temperature), 
+                    'id': temp_point.id,
                     }
                 )
             data.append(
@@ -71,3 +72,10 @@ class TempPoint(models.Model):
     class Meta:
         verbose_name = 'Temperature Point'
         verbose_name_plural = 'Temperature Points'
+
+
+class PointComment(models.Model):
+    point = models.ForeignKey('log.TempPoint', null=True, blank=True)
+    comment = models.TextField(null=True, blank=True)
+    # author = models.ForeignKey
+    # date = models.DateTimeField
