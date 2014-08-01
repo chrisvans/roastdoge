@@ -12,10 +12,11 @@ function lineChartVisualization(options) {
     visualization.margin = options.margin;
     visualization.width = options.width;
     visualization.height = options.height;
-    visualization.xAxisLabel = options.xAxisLabel;
-    visualization.yAxisLabel = options.yAxisLabel;
+    visualization.xAxisLabel = options.xAxisLabel || 'Time in Minutes';
+    visualization.yAxisLabel = options.yAxisLabel || 'Temperature';
     visualization.nvchart = '';
-    
+    visualization.tempMeasurement = options.tempMeasurement || 'C';  
+
   }
 
   // Run the init method
@@ -37,16 +38,16 @@ function lineChartVisualization(options) {
       })
 
       visualization.nvchart.xAxis // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
-        .axisLabel(visualization.xAxisLabel || 'Time in Minutes')
+        .axisLabel(visualization.xAxisLabel)
         .tickFormat(d3.format(',.0f'))
       //.tickFormat(function(d) { return d3.time.format('%b %d')(new Date(d)); })
         .scale(visualization.xScale);
 
       visualization.nvchart.yAxis
-        .axisLabel(visualization.yAxisLabel || 'Temperature')
+        .axisLabel(visualization.yAxisLabel)
         .tickFormat( function(d) {
           formatted_tick = d3.format(',.1f')(d);
-          return formatted_tick + ' F';
+          return formatted_tick + ' ' + visualization.tempMeasurement;
         });
 
       d3.select(visualization.selectElement)
@@ -80,16 +81,16 @@ function lineChartVisualization(options) {
     })
 
     visualization.nvchart.xAxis // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
-      .axisLabel(visualization.xAxisLabel || 'Time in Minutes')
+      .axisLabel(visualization.xAxisLabel)
       .tickFormat(d3.format(',.0f'))
     //.tickFormat(function(d) { return d3.time.format('%b %d')(new Date(d)); })
       .scale(visualization.xScale);
 
     visualization.nvchart.yAxis
-      .axisLabel(visualization.xAxisLabel || 'Temperature')
+      .axisLabel(visualization.xAxisLabel)
       .tickFormat( function(d) {
         formatted_tick = d3.format(',.1f')(d);
-        return formatted_tick + ' F';
+        return formatted_tick + ' ' + visualization.tempMeasurement;
       });
 
     d3.select(visualization.selectElement + ' svg')
