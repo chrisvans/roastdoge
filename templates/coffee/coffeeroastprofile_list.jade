@@ -1,0 +1,16 @@
+{% extends 'base.jade' %}
+{% load staticfiles %}
+
+{% block content %}
+
+h3 List of Profiles
+h4
+  a(href="{% url 'coffee-list' %}") Back to Coffee
+
+ul
+  {% for profile in roastprofile_list %}
+  li
+    a(href="{% url 'roastprofile-detail' profile.id %}") {{ profile.name }}
+  {% endfor %}
+
+{% endblock content %}

@@ -1,0 +1,56 @@
+{% extends 'base.jade' %}
+{% load staticfiles %}
+
+{% block title%}Profile Detail{% endblock title %} RoastDoge
+
+{% block css %}
+link(href='{% static "javascripts/d3_visualization/css/nv.d3.css" %}', rel='stylesheet', type='text/css')
+link(href='{% static "javascripts/d3_visualization/css/d3_vis.css" %}', rel='stylesheet', type='text/css', media='screen')
+{% endblock css %}
+
+{% block content %}
+
+h3
+  ul
+    li
+      a(href="{% url 'coffeeroastprofile-list' roastprofile.coffee.id %}") Back to Profile List
+    li
+      a(href="{% url 'roastprofile-delete' roastprofile.id %}") Delete This Profile
+
+div.detail
+  p {{ roastprofile.name }}
+  p {{ roastprofile.date }}
+  div(id="profile-chart", style='height:350px;')
+
+{% endblock content %}
+
+{% block javascripts %}
+
+script(src="{% static 'javascripts/jquery-1.8.3.min.js' %}")
+script(src='{% static "javascripts/d3_visualization/d3.v2.min.js" %}')
+script(src='{% static "javascripts/d3_visualization/nv.d3.min.js" %}')
+script(src='{% static "javascripts/d3_visualization/tooltip.js" %}')
+script(src='{% static "javascripts/d3_visualization/utils.js" %}')
+script(src='{% static "javascripts/d3_visualization/legend.js" %}')
+script(src='{% static "javascripts/d3_visualization/axis.js" %}')
+script(src="{% static 'javascripts/d3_visualization/line_chart/line.js' %}")
+script(src="{% static 'javascripts/d3_visualization/line_chart/lineChart.js' %}")
+script(src="{% static 'javascripts/d3_visualization/line_chart/lineChartModel.js' %}")
+
+script
+  var selectElement = '#profile-chart';
+  var data = {{ roastprofile.get_temp_graph_data_JSON|safe }};
+  var margin = { top: 20, right: 20, bottom: 50, left: 40 };
+  var width = 500 - margin.left - margin.right;
+  var height = 350 - margin.top - margin.bottom;
+  options = { 
+    'selectElement': selectElement, 
+    'data': data, 
+    'margin': margin, 
+    'width': width, 
+    'height': height
+  }
+  var lineChartVis = lineChartVisualization(options);
+  lineChartVis.createChart();
+
+{% endblock javascripts %}

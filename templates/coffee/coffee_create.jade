@@ -1,0 +1,23 @@
+{% extends 'base.jade' %}
+{% load staticfiles %}
+
+{% block content %}
+
+h3
+  a(href="{% url 'coffee-list' %}") Back to Coffee
+  
+{% if form.non_field_errors %}
+{% for error in form.non_field_errors %}
+p
+  strong {{ error|escape }}
+{% endfor %}
+{% endif %}
+
+div
+  form(method='post')
+    {% csrf_token %}
+    {{ form.as_p }}
+    input(type="submit", value="Submit")
+
+
+{% endblock content %}
