@@ -11,6 +11,5 @@ urlpatterns = patterns('',
         name='coffeeroastprofile-list'
     ),
     url(r'^create/$', views.GreenCoffeeCreate.as_view(), name='greencoffee-new'),
-    url(r'^component/create/$', views.CoffeeComponentCreate.as_view(), name='coffeecomponent-new'),
     url(r'^blend/create/$', views.CoffeeCreate.as_view(), name='coffee-new'),
 )

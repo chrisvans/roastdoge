@@ -45,24 +45,6 @@ class CoffeeCreate(generic.FormView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class CoffeeComponentCreate(generic.FormView):
-    """
-    Responsible for rendering a form for a CoffeeComponent,
-    processing a post from that form, and creating a new
-    CoffeeCompnent.
-    """
-
-    template_name = 'coffee/coffee_create.jade'
-    form_class = forms.GreenCoffeeComponentForm
-    success_url = reverse_lazy('coffee-list')
-
-    def form_valid(self, form):
-
-        form.save()
-
-        return HttpResponseRedirect(self.get_success_url())
-
-
 class CoffeeList(generic.ListView):
     """
     Responsible for showing all of the relevant Coffees,

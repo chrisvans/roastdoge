@@ -8,17 +8,16 @@ import random
 class GreenCoffee(models.Model):
     name = models.CharField(max_length=255, null=False, unique=True)
     country = models.CharField(max_length=255, null=True, blank=False)
-    farm = models.CharField(max_length=255, null=True, blank=False)
+    region = models.CharField(max_length=255, null=True, blank=True)
+    farm = models.CharField(max_length=255, null=True, blank=True)
     varietal = models.CharField(max_length=255, null=True, blank=True)
     harvest_date = models.DateTimeField(default=datetime.datetime.utcnow())
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
-        return u'%s - %s - %s - %s' % (
+        return u'%s - %s' % (
             unicode(self.harvest_date), 
             self.name,
-            self.farm,
-            self.varietal
         )
 
 
@@ -73,16 +72,4 @@ class Coffee(models.Model):
                 break       
 
     def __unicode__(self):
-        description = []
-        for component in self.greencoffeecomponent_set.all():
-            description.append(unicode(component))
-        return u'%s %s' % (self.name, u''.join(description))
-
-
-class GreenCoffeeComponent(models.Model):
-    green_coffee = models.ForeignKey('coffee.GreenCoffee', null=False)
-    coffee = models.ForeignKey('coffee.Coffee', null=True, blank=True)
-    percent = models.PositiveIntegerField()
-
-    def __unicode__(self):
-        return u'%s%s %s ' % (self.percent, '%', self.green_coffee.name)
+        return self.name

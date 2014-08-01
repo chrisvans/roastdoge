@@ -24,13 +24,4 @@ class CoffeeForm(forms.ModelForm):
 
     class Meta:
         model = roastdoge_models.Coffee
-        # TODO - Add a widget for selecting multiple coffee components, and validation 
-        # around percentages that can only add to 100
-
-
-class GreenCoffeeComponentForm(forms.ModelForm):
-
-    class Meta:
-        model = roastdoge_models.GreenCoffeeComponent
-
-    # TODO - add validation around a percent being no higher than 100
+        # TODO - Add a widget for selecting multiple coffee components
