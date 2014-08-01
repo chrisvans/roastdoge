@@ -22,6 +22,8 @@ div.detail
   p {{ roastprofile.date }}
   div(id="profile-chart", style='height:350px;')
 
+div#comments
+
 {% endblock content %}
 
 {% block javascripts %}
@@ -41,8 +43,9 @@ script(src="{% static 'javascripts/ajaxModels/setupAjax.js' %}")
 script(src="{% static 'javascripts/ajaxModels/tempPoint.js' %}")
 
 script
-  var commentCreateURL = "{% url 'ajax-temppoint-comment-create' %}"
+  var commentCreateFormURL = "{% url 'ajax-temppoint-comment-create-form' %}"
   var commentUpdateURL = "{% url 'ajax-comment-update' %}"
+  var commentCreateURL = "{% url 'ajax-temppoint-comment-create' %}"
   var selectElement = '#profile-chart';
   var data = {{ roastprofile.get_temp_graph_data_JSON|safe }};
   var margin = { top: 20, right: 20, bottom: 50, left: 40 };
@@ -56,7 +59,19 @@ script
     'height': height,
   }
   var lineChartVis = lineChartVisualization(lineOptions);
-  lineChartVis.createChart();
+  var circleCallback = function() {
+      lineChartVis.nvchart.lines.dispatch.on('elementClick', function(element) {
+      var pointOptions = {
+        id: element.point.id,
+        commentCreateFormURL: commentCreateFormURL,
+        commentCreateURL: commentCreateURL,
+        commentUpdateURL: commentUpdateURL,
+      }
+      var tempPoint = tempPointModel(pointOptions);
+      tempPoint.commentCreateForm();
+    })
+  }
+  lineChartVis.createChart([circleCallback]);
 
   
 

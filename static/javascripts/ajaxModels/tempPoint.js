@@ -5,41 +5,33 @@ function tempPointModel(options) {
         tempPoint.id = options.id
         tempPoint.createURL = options.createURL
         tempPoint.commentCreateURL = options.commentCreateURL
-        tempPoint.commentUpdateURL = options.commentCreateURL
+        tempPoint.commentCreateFormURL = options.commentCreateFormURL
     }
 
     tempPoint.__init__(options)
 
     tempPoint.commentCreate = function() {
+      
+      var comment = $('#id_comment').val();
+
       $.ajax({
         url: tempPoint.commentCreateURL,
         type: 'POST',
-        data: { 
+        data: {
           'tempPointID': tempPoint.id,
+          'comment': comment,
         },
         dataType: 'json',
-        statusCode: {
-          403: function() {
-            alert( "Permission was denied.  It is possible that your session has timed out.  Please reload the page." );
-          }
-        },
         success: function(response) {
-
-          // return the comment, create a form for it
-
-        },
-        error: function(jqXHR, textStatus, errorThrown ) {
-
-          // log the error
-
+          tempPoint.commentCreateForm();
         }
-      });
+      })
     }
 
-    tempPoint.commentUpdate = function() {
+    tempPoint.commentCreateForm = function() {
       $.ajax({
-        url: tempPoint.commentUpdateURL,
-        type: 'POST',
+        url: tempPoint.commentCreateFormURL,
+        type: 'GET',
         data: { 
           'tempPointID': tempPoint.id,
         },
@@ -50,6 +42,10 @@ function tempPointModel(options) {
           }
         },
         success: function(response) {
+
+          $('#comments').html(response.data);
+
+          $('#submit-pointcomment').click(function() {tempPoint.commentCreate()})
 
           // return the comment, create a form for it
 

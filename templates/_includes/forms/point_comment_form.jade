@@ -1,0 +1,6 @@
+{{ form.comment }}
+input(type="button", id="submit-pointcomment", value="Comment")
+
+{% for comment in comments %}
+p {{ comment.comment }}
+{% endfor %}

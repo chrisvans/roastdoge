@@ -22,7 +22,7 @@ function lineChartVisualization(options) {
   // Run the init method
   visualization.__init__(options);
 
-  visualization.createChart = function () {
+  visualization.createChart = function (callbacks) {
 
     visualization.xScale = d3.scale.linear()
       .domain([0, d3.max(visualization.data, function(d) { return d.values; })])
@@ -63,13 +63,19 @@ function lineChartVisualization(options) {
         visualization.nvchart.update();
       });
 
+      if (callbacks.length > 0) {
+        for (var i=0; i<callbacks.length; i++) {
+          callbacks[0]()
+        }
+      }
+
       return visualization.nvchart;
 
     });
 
   }
 
-  visualization.updateChart = function() {
+  visualization.updateChart = function(callbacks) {
 
     visualization.xScale = d3.scale.linear()
       .domain([0, d3.max(visualization.data, function(d) { return d.values; })])
@@ -100,6 +106,12 @@ function lineChartVisualization(options) {
       .call(visualization.nvchart);
 
     visualization.nvchart.update();
+
+    if (callbacks.length > 0) {
+      for (var i=0; i<callbacks.length; i++) {
+        callbacks[0]()
+      }
+    }
 
   }
 
