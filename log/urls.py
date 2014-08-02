@@ -10,7 +10,7 @@ urlpatterns = patterns('',
 
     # Ajax
     url(
-        r'^temppoint/comment/create/form/$', 
+        r'^temppoint/comment/create-form/$', 
         ajax.temppoint_comment_create_form, 
         name='ajax-temppoint-comment-create-form'
     ),
@@ -19,8 +19,12 @@ urlpatterns = patterns('',
         ajax.temppoint_comment_create,
         name='ajax-temppoint-comment-create'
     ),
-    url(r'^comment/update/$',
+    url(r'^temppoint/comment/update/$',
         ajax.comment_update,
         name='ajax-comment-update'
+    ),
+    url(r'^temppoint/comment/delete/$',
+        ajax.comment_delete,
+        name='ajax-comment-delete'
     ),
 )

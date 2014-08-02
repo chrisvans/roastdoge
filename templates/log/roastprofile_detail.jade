@@ -6,6 +6,7 @@
 {% block css %}
 link(href='{% static "javascripts/d3_visualization/css/nv.d3.css" %}', rel='stylesheet', type='text/css')
 link(href='{% static "javascripts/d3_visualization/css/d3_vis.css" %}', rel='stylesheet', type='text/css', media='screen')
+link(href='{% static "css/roastprofile_detail.css" %}', rel='stylesheet', type='text/css', media='screen')
 {% endblock css %}
 
 {% block content %}
@@ -46,6 +47,7 @@ script
   var commentCreateFormURL = "{% url 'ajax-temppoint-comment-create-form' %}"
   var commentUpdateURL = "{% url 'ajax-comment-update' %}"
   var commentCreateURL = "{% url 'ajax-temppoint-comment-create' %}"
+  var commentDeleteURL = "{% url 'ajax-comment-delete' %}"
   var selectElement = '#profile-chart';
   var data = {{ roastprofile.get_temp_graph_data_JSON|safe }};
   var margin = { top: 20, right: 20, bottom: 50, left: 40 };
@@ -66,6 +68,7 @@ script
         commentCreateFormURL: commentCreateFormURL,
         commentCreateURL: commentCreateURL,
         commentUpdateURL: commentUpdateURL,
+        commentDeleteURL: commentDeleteURL,
       }
       var tempPoint = tempPointModel(pointOptions);
       tempPoint.commentCreateForm();

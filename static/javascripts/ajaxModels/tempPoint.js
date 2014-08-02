@@ -5,11 +5,13 @@ function tempPointModel(options) {
         tempPoint.id = options.id
         tempPoint.createURL = options.createURL
         tempPoint.commentCreateURL = options.commentCreateURL
+        tempPoint.commentDeleteURL = options.commentDeleteURL
         tempPoint.commentCreateFormURL = options.commentCreateFormURL
     }
 
     tempPoint.__init__(options)
 
+    // Creates a PointComment with the TempPoint as it's parent.
     tempPoint.commentCreate = function() {
       
       var comment = $('#id_comment').val();
@@ -28,6 +30,24 @@ function tempPointModel(options) {
       })
     }
 
+    // Deletes a comment
+
+    tempPoint.commentDelete = function(commentID) {
+      
+      $.ajax({
+        url: tempPoint.commentDeleteURL,
+        type: 'POST',
+        data: {
+          'commentID': commentID,
+        },
+        dataType: 'json',
+        success: function(response) {
+          $('#' + commentID).remove()
+        }
+      })
+    }
+
+    // Instantiates a new comment form, and displays all previous comments.
     tempPoint.commentCreateForm = function() {
       $.ajax({
         url: tempPoint.commentCreateFormURL,
@@ -47,6 +67,11 @@ function tempPointModel(options) {
 
           $('#submit-pointcomment').click(function() {tempPoint.commentCreate()})
 
+          $('.comment-delete').click(function() {
+            commentID = $(this).closest('div.comment').prop('id');
+            tempPoint.commentDelete(commentID);
+          })
+
           // return the comment, create a form for it
 
         },
@@ -58,7 +83,7 @@ function tempPointModel(options) {
       });
     }
 
-    // Not Implemented
+    // Not Implemented - intended to be used to create your own data points.
     tempPoint.create = function() {
       $.ajax({
         url: tempPoint.createURL,

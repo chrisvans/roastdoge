@@ -1,6 +1,10 @@
+h3 {{ point }}
 {{ form.comment }}
 input(type="button", id="submit-pointcomment", value="Comment")
 
 {% for comment in comments %}
-p {{ comment.comment }}
+div.comment(id="{{comment.id}}")
+  p Created on {{ comment.created }}
+    i.fa.fa-times.comment-delete
+  p {{ comment.comment }}
 {% endfor %}

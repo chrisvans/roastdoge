@@ -42,6 +42,7 @@ APPS = (
 
 THIRD_PARTY_APPS = (
     'psycopg2',
+    'django_extensions',
 )
 
 INSTALLED_APPS = DJANGO_APPS + APPS + THIRD_PARTY_APPS

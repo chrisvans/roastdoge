@@ -1,5 +1,6 @@
 https://www.djangoproject.com/download/1.7c2/tarball/
 argparse==1.2.1
+django-extensions==1.3.9
 psycopg2==2.5.3
 pyjade==2.2.0
 pyserial==2.7

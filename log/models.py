@@ -2,6 +2,7 @@
 from django.db import models
 
 # Third Party
+from django_extensions.db.models import TimeStampedModel
 import pytz
 import simplejson
 
@@ -74,8 +75,7 @@ class TempPoint(models.Model):
         verbose_name_plural = 'Temperature Points'
 
 
-class PointComment(models.Model):
+class PointComment(TimeStampedModel):
     point = models.ForeignKey('log.TempPoint', null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
     # author = models.ForeignKey
-    # date = models.DateTimeField
