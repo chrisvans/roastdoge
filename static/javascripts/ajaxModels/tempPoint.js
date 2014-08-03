@@ -26,6 +26,15 @@ function tempPointModel(options) {
         dataType: 'json',
         success: function(response) {
           tempPoint.commentCreateForm();
+
+          d3.selectAll('circle.nv-point').datum(lineChartVis.data);
+          d3.selectAll('circle.nv-point').each(function(d, i) { 
+            if (d[0].values[i].id == tempPoint.id) { 
+              $(this).attr("class", $(this).attr("class") + " has-comments")
+                .attr("r", "5"); 
+            } 
+          })
+
         }
       })
     }
@@ -38,11 +47,22 @@ function tempPointModel(options) {
         url: tempPoint.commentDeleteURL,
         type: 'POST',
         data: {
+          'tempPointID': tempPoint.id,
           'commentID': commentID,
         },
         dataType: 'json',
         success: function(response) {
           $('#' + commentID).remove()
+          // TODO: Figure out why addClass toggleClass and removeClass aren't working, even in the console
+          // and implement removeClass here properly
+          if (!response.hasComments) {
+            d3.selectAll('circle.nv-point').each(function(d, i) { 
+              if (d[0].values[i].id == tempPoint.id) { 
+                $(this).attr("class", $(this).attr("class").replace("has-comments", ""))
+                  .attr("r", "5"); 
+              } 
+            })
+          }
         }
       })
     }

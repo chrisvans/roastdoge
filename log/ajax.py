@@ -45,6 +45,11 @@ def comment_update(request):
 
 def comment_delete(request):
 
-    models.PointComment.objects.get(id=request.POST.get('commentID')).delete()
+    temppoint = models.TempPoint.objects.get(id=request.POST.get('tempPointID'))
+    temppoint.pointcomment_set.get(id=request.POST.get('commentID')).delete()
 
-    return HttpResponse(simplejson.dumps({}))
+    data = {
+        'hasComments': temppoint.pointcomment_set.all().exists()
+    }
+
+    return HttpResponse(simplejson.dumps(data))

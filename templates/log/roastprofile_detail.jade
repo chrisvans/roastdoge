@@ -29,7 +29,7 @@ div#comments
 
 {% block javascripts %}
 
-script(src="{% static 'javascripts/jquery-1.8.3.min.js' %}")
+script(src="{% static 'javascripts/jquery-2.1.1.min.js' %}")
 script(src="{% static 'javascripts/jquery.cookie.js' %}")
 script(src='{% static "javascripts/d3_visualization/d3.v2.min.js" %}')
 script(src='{% static "javascripts/d3_visualization/nv.d3.min.js" %}')
@@ -53,16 +53,26 @@ script
   var margin = { top: 20, right: 20, bottom: 50, left: 40 };
   var width = 500 - margin.left - margin.right;
   var height = 350 - margin.top - margin.bottom;
+  var storedCallbacks = function() {
+    d3.selectAll('circle.nv-point').datum(lineChartVis.data);
+    d3.selectAll('circle.nv-point').each(function(d, i) { 
+      if (d[0].values[i].hasComments) { 
+        $(this).attr("class", $(this).attr("class") + " has-comments")
+          .attr("r", "5"); 
+      } 
+    })
+  }
   lineOptions = { 
     'selectElement': selectElement, 
     'data': data, 
     'margin': margin, 
     'width': width, 
     'height': height,
+    'storedCallbacks': [storedCallbacks],
   }
   var lineChartVis = lineChartVisualization(lineOptions);
   var circleCallback = function() {
-      lineChartVis.nvchart.lines.dispatch.on('elementClick', function(element) {
+    lineChartVis.nvchart.lines.dispatch.on('elementClick', function(element) {
       var pointOptions = {
         id: element.point.id,
         commentCreateFormURL: commentCreateFormURL,

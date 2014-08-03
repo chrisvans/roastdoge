@@ -16,11 +16,18 @@ function lineChartVisualization(options) {
     visualization.yAxisLabel = options.yAxisLabel || 'Temperature';
     visualization.nvchart = '';
     visualization.tempMeasurement = options.tempMeasurement || 'C';  
+    visualization.storedCallbacks = options.storedCallbacks || [];
 
   }
 
   // Run the init method
   visualization.__init__(options);
+
+  visualization.callStoredCallbacks = function() {
+    for (var i=0; i<visualization.storedCallbacks.length; i++) {
+      visualization.storedCallbacks[i]();
+    }
+  }
 
   visualization.createChart = function (callbacks) {
 
@@ -62,12 +69,23 @@ function lineChartVisualization(options) {
           .call(visualization.nvchart);
         visualization.nvchart.update();
       });
-
-      if (callbacks.length > 0) {
-        for (var i=0; i<callbacks.length; i++) {
-          callbacks[0]()
+      
+      function callCallbacks() {
+        if ((callbacks) && (callbacks.length > 0)) {
+          for (var i=0; i<callbacks.length; i++) {
+            callbacks[i]()
+          }
         }
       }
+
+      callCallbacks();
+
+      visualization.callStoredCallbacks()
+
+      nv.utils.windowResize(function() {
+        visualization.nvchart.update;
+        setTimeout(visualization.callStoredCallbacks, 1000);
+      })
 
       return visualization.nvchart;
 
@@ -107,11 +125,13 @@ function lineChartVisualization(options) {
 
     visualization.nvchart.update();
 
-    if (callbacks.length > 0) {
+    if ((callbacks) && (callbacks.length > 0)) {
       for (var i=0; i<callbacks.length; i++) {
-        callbacks[0]()
+        callbacks[i]()
       }
     }
+
+    setTimeout(visualization.callStoredCallbacks, 1000)
 
   }
 

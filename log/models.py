@@ -32,6 +32,7 @@ class RoastProfile(models.Model):
                     'x':temp_point.time,
                     'y':float(temp_point.temperature), 
                     'id': temp_point.id,
+                    'hasComments': temp_point.pointcomment_set.all().exists(),
                     }
                 )
             data.append(
