@@ -48,17 +48,29 @@ script
   var commentUpdateURL = "{% url 'ajax-comment-update' %}"
   var commentCreateURL = "{% url 'ajax-temppoint-comment-create' %}"
   var commentDeleteURL = "{% url 'ajax-comment-delete' %}"
+  var commentIconURL = "http://cdn.flaticon.com/png/256/8804.png"
   var selectElement = '#profile-chart';
   var data = {{ roastprofile.get_temp_graph_data_JSON|safe }};
   var margin = { top: 20, right: 20, bottom: 50, left: 40 };
   var width = 500 - margin.left - margin.right;
   var height = 350 - margin.top - margin.bottom;
-  var storedCallbacks = function() {
+  var pointIconCallback = function() {
+    d3.selectAll('.svg-comment-icon').remove()
     d3.selectAll('circle.nv-point').datum(lineChartVis.data);
     d3.selectAll('circle.nv-point').each(function(d, i) { 
       if (d[0].values[i].hasComments) { 
-        $(this).attr("class", $(this).attr("class") + " has-comments")
-          .attr("r", "5"); 
+        var thisCircle = d3.select(this)
+
+        var parentG = d3.select(thisCircle.node().parentNode)
+        var iconSize = 16;
+        parentG
+          .append("image")
+            .attr("xlink:href", commentIconURL)
+            .attr("x", thisCircle.attr('cx') + iconSize/2)
+            .attr("y", thisCircle.attr('cy') - iconSize)
+            .attr("width", iconSize)
+            .attr("height", iconSize)
+            .attr("class", "svg-comment-icon temppoint_" + d[0].values[i].id);
       } 
     })
   }
@@ -68,10 +80,10 @@ script
     'margin': margin, 
     'width': width, 
     'height': height,
-    'storedCallbacks': [storedCallbacks],
+    'storedCallbacks': [pointIconCallback],
   }
   var lineChartVis = lineChartVisualization(lineOptions);
-  var circleCallback = function() {
+  var pointClickCallback = function() {
     lineChartVis.nvchart.lines.dispatch.on('elementClick', function(element) {
       var pointOptions = {
         id: element.point.id,
@@ -79,12 +91,13 @@ script
         commentCreateURL: commentCreateURL,
         commentUpdateURL: commentUpdateURL,
         commentDeleteURL: commentDeleteURL,
+        commentIconURL: commentIconURL,
       }
       var tempPoint = tempPointModel(pointOptions);
       tempPoint.commentCreateForm();
     })
   }
-  lineChartVis.createChart([circleCallback]);
+  lineChartVis.createChart([pointClickCallback]);
 
   
 

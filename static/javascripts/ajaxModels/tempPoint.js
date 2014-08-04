@@ -7,9 +7,34 @@ function tempPointModel(options) {
         tempPoint.commentCreateURL = options.commentCreateURL
         tempPoint.commentDeleteURL = options.commentDeleteURL
         tempPoint.commentCreateFormURL = options.commentCreateFormURL
+        tempPoint.commentIconURL = options.commentIconURL
     }
 
     tempPoint.__init__(options)
+
+    tempPoint.updatePointIcons = function() {
+      d3.selectAll('circle.nv-point').datum(lineChartVis.data);
+      d3.selectAll('circle.nv-point').each(function(d, i) { 
+        if (d[0].values[i].id == tempPoint.id) { 
+          var commentIcon = d3.select('.svg-comment-icon.temppoint_' + tempPoint.id);
+
+          if (commentIcon.node() == null) {
+            var thisCircle = d3.select(this)
+
+            var parentG = d3.select(thisCircle.node().parentNode)
+            var iconSize = 16;
+            parentG
+              .append("image")
+                .attr("xlink:href", tempPoint.commentIconURL)
+                .attr("x", thisCircle.attr('cx') + iconSize/2)
+                .attr("y", thisCircle.attr('cy') - iconSize)
+                .attr("width", iconSize)
+                .attr("height", iconSize)
+                .attr("class", "svg-comment-icon temppoint_" + tempPoint.id);
+          }
+        } 
+      })
+    }
 
     // Creates a PointComment with the TempPoint as it's parent.
     tempPoint.commentCreate = function() {
@@ -26,14 +51,7 @@ function tempPointModel(options) {
         dataType: 'json',
         success: function(response) {
           tempPoint.commentCreateForm();
-
-          d3.selectAll('circle.nv-point').datum(lineChartVis.data);
-          d3.selectAll('circle.nv-point').each(function(d, i) { 
-            if (d[0].values[i].id == tempPoint.id) { 
-              $(this).attr("class", $(this).attr("class") + " has-comments")
-                .attr("r", "5"); 
-            } 
-          })
+          tempPoint.updatePointIcons();
 
         }
       })
@@ -53,15 +71,9 @@ function tempPointModel(options) {
         dataType: 'json',
         success: function(response) {
           $('#' + commentID).remove()
-          // TODO: Figure out why addClass toggleClass and removeClass aren't working, even in the console
-          // and implement removeClass here properly
+
           if (!response.hasComments) {
-            d3.selectAll('circle.nv-point').each(function(d, i) { 
-              if (d[0].values[i].id == tempPoint.id) { 
-                $(this).attr("class", $(this).attr("class").replace("has-comments", ""))
-                  .attr("r", "5"); 
-              } 
-            })
+            d3.select('.svg-comment-icon.temppoint_' + tempPoint.id).remove()
           }
         }
       })

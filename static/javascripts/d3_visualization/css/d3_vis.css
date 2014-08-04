@@ -16,6 +16,6 @@
 }
 
 /* This does not work.  ? */
-#profile-chart .nv-lineChart circle:hover {
+#profile-chart .nv-lineChart g.nv-groups {
 	cursor: pointer;
 }
