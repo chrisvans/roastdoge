@@ -1,5 +1,5 @@
 function tempPointModel(options) {
-    tempPoint = {};
+    var tempPoint = {};
 
     tempPoint.__init__ = function(options) {
         tempPoint.roastProfileID = options.roastProfileID
@@ -16,29 +16,37 @@ function tempPointModel(options) {
     tempPoint.updatePointIcons = function() {
 
       var roastProfileIndex = seriesMap[tempPoint.roastProfileID]
-      var roastLineID = lineChartVis.data[roastProfileIndex].id.toString()
-      var selectString = 'g.nv-group.nv-series-' + seriesMap[roastLineID] + ' > circle.nv-point'
-      d3.selectAll(selectString).datum(lineChartVis.data);
-      d3.selectAll(selectString).each(function(d, i) { 
-        if (d[roastProfileIndex].values[i].id == tempPoint.id) { 
-          var commentIcon = d3.select('.svg-comment-icon.temppoint_' + tempPoint.id);
 
-          if (commentIcon.node() == null) {
-            var thisCircle = d3.select(this)
+      console.log(lineChartVis.data[roastProfileIndex]);
+      console.log(tempPoint.id);
+      console.log(tempPoint.roastProfileID);
 
-            var parentG = d3.select(thisCircle.node().parentNode)
-            var iconSize = 16;
-            parentG
-              .append("image")
-                .attr("xlink:href", tempPoint.commentIconURL)
-                .attr("x", thisCircle.attr('cx') + iconSize/2)
-                .attr("y", thisCircle.attr('cy') - iconSize)
-                .attr("width", iconSize)
-                .attr("height", iconSize)
-                .attr("class", "svg-comment-icon temppoint_" + tempPoint.id);
-          }
-        } 
-      })
+      if (!lineChartVis.data[roastProfileIndex].hidden) {
+        var roastLineID = lineChartVis.data[roastProfileIndex].id.toString()
+        var selectString = 'g.nv-group.nv-series-' + seriesMap[roastLineID] + ' > circle.nv-point'
+        d3.selectAll(selectString).datum(lineChartVis.data);
+        d3.selectAll(selectString).each(function(d, i) { 
+          if (d[roastProfileIndex].values[i].id == tempPoint.id) { 
+            d[roastProfileIndex].values[i].hasComments = true;
+            var commentIcon = d3.select('.svg-comment-icon.temppoint_' + tempPoint.id);
+
+            if (commentIcon.node() == null) {
+              var thisCircle = d3.select(this)
+
+              var parentG = d3.select(thisCircle.node().parentNode)
+              var iconSize = 16;
+              parentG
+                .append("image")
+                  .attr("xlink:href", tempPoint.commentIconURL)
+                  .attr("x", thisCircle.attr('cx') + iconSize/2)
+                  .attr("y", thisCircle.attr('cy') - iconSize)
+                  .attr("width", iconSize)
+                  .attr("height", iconSize)
+                  .attr("class", "svg-comment-icon temppoint_" + tempPoint.id);
+            }
+          } 
+        })
+      }
     }
 
     // Creates a PointComment with the TempPoint as it's parent.

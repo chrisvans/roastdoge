@@ -8,7 +8,10 @@ function lineChartVisualization(options) {
   visualization.__init__ = function(options) {
 
     visualization.selectElement = options.selectElement;
+
+    // each object within the data attr now supports an extra boolean key "hidden", which will upon update, hide or unhide the line
     visualization.data = options.data;
+
     visualization.margin = options.margin;
     visualization.width = options.width;
     visualization.height = options.height;
@@ -26,6 +29,17 @@ function lineChartVisualization(options) {
   visualization.callStoredCallbacks = function() {
     for (var i=0; i<visualization.storedCallbacks.length; i++) {
       visualization.storedCallbacks[i]();
+    }
+  }
+
+  visualization.setLinesVisibility = function() {
+    for (var i=0; i<visualization.data.length; i++) {
+      lineG = d3.select(visualization.selectElement + ' svg g g g.nv-linesWrap g.nvd3.nv-wrap.nv-line g g.nv-groups > g.nv-group.nv-series-' + i)
+      if (visualization.data[i].hidden) {
+        lineG.style('visibility', 'hidden')
+      } else {
+        lineG.style('visibility', 'visible')
+      }
     }
   }
 
@@ -92,6 +106,8 @@ function lineChartVisualization(options) {
 
     });
 
+    visualization.setLinesVisibility()
+
   }
 
   visualization.updateChart = function(callbacks) {
@@ -131,6 +147,8 @@ function lineChartVisualization(options) {
         callbacks[i]()
       }
     }
+
+    visualization.setLinesVisibility()
 
     setTimeout(visualization.callStoredCallbacks, 1000)
 
