@@ -1,7 +1,22 @@
 {% extends 'base.jade' %}
 {% load staticfiles %}
 
+{% block css %}
+link(href="{% static 'css/index.css' %}", rel='stylesheet', type='text/css', media='screen')
+{% endblock css %}
+
 {% block content %}
 h1
   a(href="{% url 'coffee-list' %}") View Coffees
+
+{% comment %}
+// TODO: Make a thank-you page or a credit page to display this information.
+{% endcomment %}
+hr
+
+div#credit 
+  p SVG Icons made by Elegant Themes from 
+    a(href="http://www.flaticon.com", title="Flaticon") www.flaticon.com
+  p All other Icons made by 
+    a(href="http://fontawesome.io/", title="FontAwesome") fontawesome.io
 {% endblock content %}

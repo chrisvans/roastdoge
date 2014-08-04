@@ -47,8 +47,9 @@ class RoastProfile(models.Model):
     def get_pointcomment_count(self):
         # TODO: Make this more efficient
         count = 0
-        for temppoint in self.temppoint_set.all():
-            count += temppoint.pointcomment_set.all().count()
+        for temppoint in self.temppoint_set.all().prefetch_related('pointcomment_set'):
+            if temppoint.pointcomment_set.all().exists():
+                count += temppoint.pointcomment_set.all().count()
         return count
 
     def __unicode__(self):
