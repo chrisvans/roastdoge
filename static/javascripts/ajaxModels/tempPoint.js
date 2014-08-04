@@ -92,7 +92,10 @@ function tempPointModel(options) {
             tempPoint.commentDelete(commentID);
           })
 
-          // return the comment, create a form for it
+          var target= "div.comments";
+          $('html, body').animate({
+            scrollTop: $(target).offset().top
+          }, 1000);
 
         },
         error: function(jqXHR, textStatus, errorThrown ) {
@@ -123,6 +126,7 @@ function tempPointModel(options) {
 
         },
         error: function(jqXHR, textStatus, errorThrown ) {
+
           // log the error
 
         }

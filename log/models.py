@@ -44,6 +44,13 @@ class RoastProfile(models.Model):
 
         return simplejson.dumps(data)
 
+    def get_pointcomment_count(self):
+        # TODO: Make this more efficient
+        count = 0
+        for temppoint in self.temppoint_set.all():
+            count += temppoint.pointcomment_set.all().count()
+        return count
+
     def __unicode__(self):
         if self.coffee:
             return u'%s - %s' % (self.coffee, self.name)

@@ -37,7 +37,8 @@ function lineChartVisualization(options) {
 
     nv.addGraph(function() {
       visualization.nvchart = nv.models.lineChart()
-        .color(d3.scale.category10().range());
+        .color(d3.scale.category10().range())
+        .showLegend(false);
 
       visualization.nvchart.x(function(d,i) { 
         var time = new Date(d.x)

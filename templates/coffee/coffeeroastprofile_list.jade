@@ -10,7 +10,7 @@ h4
 ul
   {% for profile in roastprofile_list %}
   li
-    a(href="{% url 'roastprofile-detail' profile.id %}") {{ profile.name }}
+    a(href="{% url 'roastprofile-detail' profile.id %}") {{ profile.name }} {% with count=profile.get_pointcomment_count %}{% if count != 0 %}: {{count}} comments. {% endif %}{% endwith %}
   {% endfor %}
 
 {% endblock content %}
