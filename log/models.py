@@ -39,6 +39,7 @@ class RoastProfile(models.Model):
                 {
                 'values': values_list,
                 'key': self.name,
+                'id': self.id,
                 }
             )
 

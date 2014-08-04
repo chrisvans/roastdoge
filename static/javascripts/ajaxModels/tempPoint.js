@@ -2,6 +2,7 @@ function tempPointModel(options) {
     tempPoint = {};
 
     tempPoint.__init__ = function(options) {
+        tempPoint.roastProfileID = options.roastProfileID
         tempPoint.id = options.id
         tempPoint.createURL = options.createURL
         tempPoint.commentCreateURL = options.commentCreateURL
@@ -13,9 +14,13 @@ function tempPointModel(options) {
     tempPoint.__init__(options)
 
     tempPoint.updatePointIcons = function() {
-      d3.selectAll('circle.nv-point').datum(lineChartVis.data);
-      d3.selectAll('circle.nv-point').each(function(d, i) { 
-        if (d[0].values[i].id == tempPoint.id) { 
+
+      var roastProfileIndex = seriesMap[tempPoint.roastProfileID]
+      var roastLineID = lineChartVis.data[roastProfileIndex].id.toString()
+      var selectString = 'g.nv-group.nv-series-' + seriesMap[roastLineID] + ' > circle.nv-point'
+      d3.selectAll(selectString).datum(lineChartVis.data);
+      d3.selectAll(selectString).each(function(d, i) { 
+        if (d[roastProfileIndex].values[i].id == tempPoint.id) { 
           var commentIcon = d3.select('.svg-comment-icon.temppoint_' + tempPoint.id);
 
           if (commentIcon.node() == null) {
