@@ -32,6 +32,7 @@ function lineChartVisualization(options) {
     }
   }
 
+  // Known issue: Chart does not scale based on visible lines, but on all lines regardless.
   visualization.setLinesVisibility = function() {
     for (var i=0; i<visualization.data.length; i++) {
       lineG = d3.select(visualization.selectElement + ' svg g g g.nv-linesWrap g.nvd3.nv-wrap.nv-line g g.nv-groups > g.nv-group.nv-series-' + i)
@@ -71,6 +72,9 @@ function lineChartVisualization(options) {
           formatted_tick = d3.format(',.1f')(d);
           return formatted_tick + ' ' + visualization.tempMeasurement;
         });
+
+      d3.select(visualization.selectElement)
+        .attr("style", "height:" + (visualization.height + visualization.margin.top + visualization.margin.bottom).toString() )
 
       d3.select(visualization.selectElement)
         .append('svg')
@@ -133,6 +137,9 @@ function lineChartVisualization(options) {
         formatted_tick = d3.format(',.1f')(d);
         return formatted_tick + ' ' + visualization.tempMeasurement;
       });
+
+    d3.select(visualization.selectElement)
+      .attr("style", "height:" + (visualization.height + visualization.margin.top + visualization.margin.bottom).toString() )
 
     d3.select(visualization.selectElement + ' svg')
       .attr("height", visualization.height + visualization.margin.top + visualization.margin.bottom)

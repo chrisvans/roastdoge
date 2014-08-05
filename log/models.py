@@ -16,13 +16,17 @@ class RoastProfile(models.Model):
     date = models.DateTimeField(default=datetime.datetime.utcnow())
     coffee = models.ForeignKey('coffee.Coffee', null=True, blank=False)
 
-    def get_temp_graph_data_JSON(self):
-    	"""
-    	This method grabs all of the associated TempPoints for this RoastProfile,
-    	and formats them into a suitable data structure for a d3 line chart, as JSON.
-    	It is intended to be used on the template, to directly drop in data for a line chart.
-    	"""
-        data = []
+    def get_roastprofile_select_form(self):
+        from forms import RoastProfileSelectForm
+        form = RoastProfileSelectForm()
+        form.fields['roastprofile_select'].queryset = form.fields['roastprofile_select'].queryset.exclude(id=self.id)
+        return form
+
+    def get_temp_graph_data(self):
+        """
+        This method grabs all of the associated TempPoints for this RoastProfile,
+        and formats them into a suitable data structure for a d3 line chart.
+        """
         if self.temppoint_set.all().exists():
             temp_points = self.temppoint_set.all().order_by('time')
             values_list = []
@@ -35,13 +39,21 @@ class RoastProfile(models.Model):
                     'hasComments': temp_point.pointcomment_set.all().exists(),
                     }
                 )
-            data.append(
-                {
+            data = {
                 'values': values_list,
                 'key': self.name,
                 'id': self.id,
-                }
-            )
+            }
+
+        return data
+
+    def get_temp_graph_data_JSON(self):
+    	"""
+    	This method grabs all of the associated TempPoints for this RoastProfile,
+    	and formats them into a suitable data structure for a d3 line chart, as JSON.
+    	It is intended to be used on the template, to directly drop in data for a line chart.
+    	"""
+        data = self.get_temp_graph_data()
 
         return simplejson.dumps(data)
 

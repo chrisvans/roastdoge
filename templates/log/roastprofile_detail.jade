@@ -17,11 +17,13 @@ h3
       a(href="{% url 'coffeeroastprofile-list' roastprofile.coffee.id %}") Back to Profile List
     li
       a(href="{% url 'roastprofile-delete' roastprofile.id %}") Delete This Profile
+    li
+      p Compare with another roast profile - {{ roastprofile.get_roastprofile_select_form.roastprofile_select }}
 
 div.detail
   p {{ roastprofile.name }}
   p {{ roastprofile.date }}
-  div(id="profile-chart", style='height:350px;')
+  div(id="profile-chart")
 
 div#comments
 
@@ -46,10 +48,13 @@ script(src="{% static 'javascripts/ajaxModels/tempPoint.js' %}")
 script
   // TODO: Development mode, variables exposed.  Close this when finished.
   var thisRoastProfileID = {{ roastprofile.id }}
+
   var commentCreateFormURL = "{% url 'ajax-temppoint-comment-create-form' %}"
   var commentUpdateURL = "{% url 'ajax-comment-update' %}"
   var commentCreateURL = "{% url 'ajax-temppoint-comment-create' %}"
   var commentDeleteURL = "{% url 'ajax-comment-delete' %}"
+  var getRoastProfileGraphDataURL = "{% url 'ajax-roastprofile-graph-data' %}"
+
   var commentIconURL = "{% static 'svg_icons/comment2.svg' %}"
   var selectElement = '#profile-chart';
 
@@ -60,121 +65,11 @@ script
   seriesMap[thisRoastProfileID] = '0'
 
   // Variables for the first line we draw, and the graph itself.
-  var data = {{ roastprofile.get_temp_graph_data_JSON|safe }};
+  var data = [{{ roastprofile.get_temp_graph_data_JSON|safe }}];
   var margin = { top: 20, right: 20, bottom: 50, left: 40 };
   var width = 500 - margin.left - margin.right;
   var height = 350 - margin.top - margin.bottom;
 
-  // Callback called after line chart creation and update.  Responsible for creating/updating svg icons representing whether or not
-  // a point has comments on it.
-  // TODO: This should be part of one of the models, or at least in it's own file.
-  var pointIconCallback = function() {
-
-    // Remove all previous comments icons.
-    d3.selectAll('.svg-comment-icon').remove()
-
-    // Iterate over each element in data, where each element represents a line
-    for (var dataIndex=0; dataIndex<lineChartVis.data.length; dataIndex++) {
-
-      // If the data has a hidden attribute set to true, that line is hidden, so we don't want to draw it's comment icons
-      if (!lineChartVis.data[dataIndex].hidden) {
-
-        // Find the id on the data line, which is the id of the roastprofile associated with this line.
-        var roastLineID = lineChartVis.data[dataIndex].id.toString()
-
-        // Construct the select string, we're looking for all of the circles ( points ) on a given roast profile's line
-        var selectString = 'g.nv-group.nv-series-' + seriesMap[roastLineID] + ' > circle.nv-point'
-
-        // Associate the data with each circle
-        // TODO: Instead of attaching the whole data array to each circle, attach each corresponding value ( from data[x].values ) to the circle
-        d3.selectAll(selectString).datum(lineChartVis.data);
-
-        // Iterate over each circle, that now has the associated data
-        d3.selectAll(selectString).each(function(d, i) { 
-
-          // Grab the value that should match the circle we're iterating over, since the circles are in the same order as the data[x].values array
-          if (d[dataIndex].values[i].hasComments) { 
-            var thisCircle = d3.select(this)
-
-            var parentG = d3.select(thisCircle.node().parentNode)
-
-            // Append the icon as an svg image to the parent g element, and set it to be near the point
-            var iconSize = 16;
-            parentG
-              .append("image")
-                .attr("xlink:href", commentIconURL)
-                .attr("x", thisCircle.attr('cx') + iconSize/2)
-                .attr("y", thisCircle.attr('cy') - iconSize)
-                .attr("width", iconSize)
-                .attr("height", iconSize)
-                // Give it a unique id that matched the temppoint's ID, so we can dynamically select it later
-                // Used for when a temppoint has all of it's comments deleted, and needs to tell this node
-                // to remove this comment icon.
-                .attr("class", "svg-comment-icon temppoint_" + d[dataIndex].values[i].id);
-          } 
-        })
-      }
-    }
-  }
-
-  // Options to be passed into the lineChartVisualization model.
-  lineOptions = { 
-    // selectElement is the element that the svg will be attached to when it is created.
-    'selectElement': selectElement, 
-    // data is an array of objects, and looks like this:
-    // [
-    //   {
-    // ---> # Values is an array of objects, where each object is the x and y coordinate of the point,
-    // ---> # the id of that object (temppoint), and a boolean noting whether or not is hasComments.
-    //     "values": 
-    //       [
-    //         {"y": 80.0, "x": 0, "id": 62, "hasComments": false}, 
-    //         {"y": 92.3, "x": 1, "id": 63, "hasComments": false}, 
-    //         ...,
-    //         ...,
-    //         ...,
-    //       ], 
-    // ---> # The id of the roastprofile
-    //     "id": 4,
-    // ---> # The name of the roastprofile, used for the legend ( not implemented ) 
-    //     "key": "Miiri - 4"
-    //   }
-    // ]
-    // data also supports another key, 'hidden', which should be a boolean, and on chartUpdate this will
-    // hide or show the corresponding line.
-    'data': data, 
-    'margin': margin, 
-    'width': width, 
-    'height': height,
-    // Any functions put into this list will be called on createChart and updateChart.
-    'storedCallbacks': [pointIconCallback],
-  }
-
-  // Initialize Chart Model.
-  var lineChartVis = lineChartVisualization(lineOptions);
-
-  // Callback that sets all points in the graph to, once clicked, create a matching tempPoint model
-  // and create an empty comment form, with all previous comments of that tempPoint listed below it.
-  // This does not need to be updated, it will always run on any click of any point created within this chart.
-  var pointClickCallback = function() {
-    lineChartVis.nvchart.lines.dispatch.on('elementClick', null)
-    lineChartVis.nvchart.lines.dispatch.on('elementClick', function(element) {
-      var pointOptions = {
-        roastProfileID: element.series.id,
-        id: element.point.id,
-        commentCreateFormURL: commentCreateFormURL,
-        commentCreateURL: commentCreateURL,
-        commentUpdateURL: commentUpdateURL,
-        commentDeleteURL: commentDeleteURL,
-        commentIconURL: commentIconURL,
-      }
-      var tempPoint = tempPointModel(pointOptions);
-      tempPoint.commentCreateForm();
-    })
-  }
-  
-  lineChartVis.createChart([pointClickCallback]);
-
-  
+script(src="{% static 'javascripts/log/roastprofile_detail.js' %}")
 
 {% endblock javascripts %}

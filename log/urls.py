@@ -27,4 +27,8 @@ urlpatterns = patterns('',
         ajax.comment_delete,
         name='ajax-comment-delete'
     ),
+    url(r'^roastprofile/temppoint/get-graph-data/$',
+        ajax.roastprofile_graph_data,
+        name='ajax-roastprofile-graph-data'
+    ),
 )

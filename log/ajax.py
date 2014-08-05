@@ -53,3 +53,14 @@ def comment_delete(request):
     }
 
     return HttpResponse(simplejson.dumps(data))
+
+def roastprofile_graph_data(request):
+
+    roastprofile_id = request.GET.get('roastProfileID')
+    roastprofile = models.RoastProfile.objects.get(id=roastprofile_id)
+
+    data = {
+        'graphData': roastprofile.get_temp_graph_data()
+    }
+
+    return HttpResponse(simplejson.dumps(data))

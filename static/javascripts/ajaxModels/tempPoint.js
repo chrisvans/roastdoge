@@ -53,8 +53,8 @@ function tempPointModel(options) {
               parentG
                 .append("image")
                   .attr("xlink:href", tempPoint.commentIconURL)
-                  .attr("x", thisCircle.attr('cx') + iconSize/2)
-                  .attr("y", thisCircle.attr('cy') - iconSize)
+                  .attr("x", thisCircle.attr('cx'))
+                  .attr("y", (parseInt(thisCircle.attr('cy')) - iconSize).toString())
                   .attr("width", iconSize)
                   .attr("height", iconSize)
                   .attr("class", "svg-comment-icon temppoint_" + tempPoint.id);
