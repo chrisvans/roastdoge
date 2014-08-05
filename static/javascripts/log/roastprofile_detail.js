@@ -1,10 +1,12 @@
 // Callback called after line chart creation and update.  Responsible for creating/updating svg icons representing whether or not
 // a point has comments on it.
 // TODO: This should be part of one of the models.
-var pointIconCallback = function() {
 
+var pointIconPreCall = function() {
   // Remove all previous comments icons.
   d3.selectAll('.svg-comment-icon').remove()
+}
+var pointIconCallback = function() {
 
   // Iterate over each element in data, where each element represents a line
   for (var dataIndex=0; dataIndex<lineChartVis.data.length; dataIndex++) {
@@ -82,6 +84,7 @@ lineOptions = {
   'height': height,
   // Any functions put into this list will be called on createChart and updateChart.
   'storedCallbacks': [pointIconCallback],
+  'preUpdateCalls': [pointIconPreCall],
 }
 
 // Initialize Chart Model.
@@ -127,7 +130,7 @@ $("#id_roastprofile_select").change(function() {
 
       seriesCount = Object.keys(seriesMap).length
       
-      dataAlreadyPresent = (seriesMap[roastProfileID] != undefined)
+      dataAlreadyPresent = (roastProfileID in seriesMap)
 
       if (dataAlreadyPresent) {
         lineChartVis.data[seriesMap[roastProfileID]] = response.graphData

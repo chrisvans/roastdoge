@@ -20,11 +20,18 @@ function lineChartVisualization(options) {
     visualization.nvchart = '';
     visualization.tempMeasurement = options.tempMeasurement || 'C';  
     visualization.storedCallbacks = options.storedCallbacks || [];
+    visualization.preUpdateCalls = options.preUpdateCalls || [];
 
   }
 
   // Run the init method
   visualization.__init__(options);
+
+  visualization.callPreUpdateCalls = function() {
+    for (var i=0; i<visualization.preUpdateCalls.length; i++) {
+      visualization.preUpdateCalls[i]();
+    }    
+  }
 
   visualization.callStoredCallbacks = function() {
     for (var i=0; i<visualization.storedCallbacks.length; i++) {
@@ -102,6 +109,7 @@ function lineChartVisualization(options) {
       visualization.callStoredCallbacks()
 
       nv.utils.windowResize(function() {
+        visualization.callPreUpdateCalls();
         visualization.nvchart.update;
         setTimeout(visualization.callStoredCallbacks, 1000);
       })
@@ -115,6 +123,8 @@ function lineChartVisualization(options) {
   }
 
   visualization.updateChart = function(callbacks) {
+
+    visualization.callPreUpdateCalls()
 
     visualization.xScale = d3.scale.linear()
       .domain([0, d3.max(visualization.data, function(d) { return d.values; })])
