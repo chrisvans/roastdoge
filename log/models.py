@@ -12,7 +12,7 @@ import random
 
 
 class RoastProfile(models.Model):
-    name = models.CharField(max_length=255, null=False, unique=True)
+    name = models.CharField(max_length=255, null=False, blank=False)
     date = models.DateTimeField(default=datetime.datetime.utcnow())
     coffee = models.ForeignKey('coffee.Coffee', null=True, blank=False)
 

@@ -91,7 +91,7 @@ function lineChartVisualization(options) {
 
       nv.utils.windowResize( function() {
         d3.select(visualization.selectElement + ' svg')
-        .transition().duration(500)
+        .transition()
           .call(visualization.nvchart);
         visualization.nvchart.update();
       });
@@ -154,7 +154,7 @@ function lineChartVisualization(options) {
     d3.select(visualization.selectElement + ' svg')
       .attr("height", visualization.height + visualization.margin.top + visualization.margin.bottom)
       .datum(visualization.data)
-      .transition().duration(500)
+      .transition()
       .call(visualization.nvchart);
 
     visualization.nvchart.update();

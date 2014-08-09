@@ -112,36 +112,73 @@ var pointClickCallback = function() {
 
 lineChartVis.createChart([pointClickCallback]);
 
+
+var setRoastProfileGraphData = function(roastProfileID, callback) {
+
+  var roastProfile = roastProfileModel({
+    'id': roastProfileID,
+    'roastProfileCreateURL': roastProfileCreateURL,
+  })
+
+  var ajaxCall = roastProfile.getGraphData();
+  ajaxCall.done(callback)
+
+}
+
+var updateChartGraphData = function(roastProfileID) {
+
+    var callback = function(response) {
+      var graphData = response.graphData;
+      var seriesCount = Object.keys(seriesMap).length
+      
+      var dataAlreadyPresent = (roastProfileID in seriesMap)
+
+      if (dataAlreadyPresent) {
+        lineChartVis.data[seriesMap[roastProfileID]] = graphData
+      } else {
+        seriesMap[roastProfileID] = seriesCount.toString()
+        lineChartVis.data.push(graphData)
+      }
+
+      lineChartVis.updateChart();
+    }
+    setRoastProfileGraphData(roastProfileID, callback)
+
+}
 // Setup handler for roastprofile select form change, and loading data into chart.
 $("#id_roastprofile_select").change(function() {
 
   var roastProfileID = $(this).val()
 
   if (!roastProfileID) { return }
-  
-  $.ajax({
-    url: getRoastProfileGraphDataURL,
-    type: 'GET',
-    data: {
-      'roastProfileID': roastProfileID,
-    },
-    dataType: 'json',
-    success: function(response) {
 
-      seriesCount = Object.keys(seriesMap).length
-      
-      dataAlreadyPresent = (roastProfileID in seriesMap)
+  updateChartGraphData(roastProfileID)
 
-      if (dataAlreadyPresent) {
-        lineChartVis.data[seriesMap[roastProfileID]] = response.graphData
-      } else {
-        seriesMap[roastProfileID] = seriesCount.toString()
-        lineChartVis.data.push(response.graphData)
+})
+
+$("#listen-newprofile").click(function() {
+  if (!$(this).data("listening")) {
+    $(this).data("listening", true)
+    $(this).val("Recording...  Click to stop recording.")
+
+    var roastProfile = roastProfileModel({
+      'roastProfileCreateURL': roastProfileCreateURL,
+    })
+
+    var callback = function(response) {
+      var updateChart = function() {
+        updateChartGraphData(roastProfile.id)
       }
 
-      lineChartVis.updateChart();
-
+      listenUpdatesID = setInterval(updateChart, 5000);
     }
-  })
 
+    var ajaxCall = roastProfile.create();
+    ajaxCall.done(callback)
+
+  } else {
+    clearInterval(listenUpdatesID)
+    $(this).data("listening", false)
+    $(this).val("Start Recording a New Profile")
+  }
 })

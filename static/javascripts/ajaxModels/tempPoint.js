@@ -3,10 +3,12 @@ function tempPointModel(options) {
 
     // Initialize own attributes based off of the object passed into the creation function
     // You could consider 'tempPoint' to be 'self'
+
+    // This model is intended to control the CRUD interactions between the tempPoint model and it's child
+    // relation, pointComments, as well as responses and changes to the HTML structure to display changes.
     tempPoint.__init__ = function(options) {
         tempPoint.roastProfileID = options.roastProfileID
         tempPoint.id = options.id
-        tempPoint.createURL = options.createURL
         tempPoint.commentCreateURL = options.commentCreateURL
         tempPoint.commentDeleteURL = options.commentDeleteURL
         tempPoint.commentCreateFormURL = options.commentCreateFormURL
@@ -69,7 +71,7 @@ function tempPointModel(options) {
       
       var comment = $('#id_comment').val();
 
-      $.ajax({
+      return $.ajax({
         url: tempPoint.commentCreateURL,
         type: 'POST',
         data: {
@@ -88,7 +90,7 @@ function tempPointModel(options) {
     // Deletes a comment
     tempPoint.commentDelete = function(commentID) {
       
-      $.ajax({
+      return $.ajax({
         url: tempPoint.commentDeleteURL,
         type: 'POST',
         data: {
@@ -107,8 +109,10 @@ function tempPointModel(options) {
     }
 
     // Instantiates a new comment form, and displays all previous comments.
+    // This should NOT be the responsibility of this model, move everything
+    // not involving GET -> Form to the template's file-specific js.
     tempPoint.commentCreateForm = function() {
-      $.ajax({
+      return $.ajax({
         url: tempPoint.commentCreateFormURL,
         type: 'GET',
         data: { 
@@ -138,33 +142,6 @@ function tempPointModel(options) {
           $('html, body').animate({
             scrollTop: $(target).offset().top
           }, 1000);
-
-        },
-        error: function(jqXHR, textStatus, errorThrown ) {
-
-          // log the error
-
-        }
-      });
-    }
-
-    // Not Implemented - intended to be used to create your own data points.
-    tempPoint.create = function() {
-      $.ajax({
-        url: tempPoint.createURL,
-        type: 'POST',
-        data: { 
-          // tempPoint create data
-        },
-        dataType: 'json',
-        statusCode: {
-          403: function() {
-            alert( "Permission was denied.  It is possible that your session has timed out.  Please reload the page." );
-          }
-        },
-        success: function(response) {
-
-          // create a new point
 
         },
         error: function(jqXHR, textStatus, errorThrown ) {

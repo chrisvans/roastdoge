@@ -54,6 +54,18 @@ def comment_delete(request):
 
     return HttpResponse(simplejson.dumps(data))
 
+def roastprofile_create(request):
+    from coffee import models as coffee_models
+    coffee = coffee_models.Coffee.objects.get(id=request.POST.get('coffeeID'))
+    roastprofile = models.RoastProfile.objects.create(name='%s%s' % (coffee.name, ' New Profile'), coffee=coffee)
+
+    data = {
+        'roastProfileID': roastprofile.id,
+        'roastProfileGraphData': roastprofile.get_temp_graph_data(),
+    }
+
+    return HttpResponse(simplejson.dumps(data))
+
 def roastprofile_graph_data(request):
 
     roastprofile_id = request.GET.get('roastProfileID')

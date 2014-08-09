@@ -31,4 +31,8 @@ urlpatterns = patterns('',
         ajax.roastprofile_graph_data,
         name='ajax-roastprofile-graph-data'
     ),
+    url(r'^roastprofile/create/$',
+        ajax.roastprofile_create,
+        name='ajax-roastprofile-create'
+    ),
 )

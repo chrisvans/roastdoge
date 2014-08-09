@@ -21,8 +21,13 @@ h3
       p Compare with another roast profile - {{ roastprofile.get_roastprofile_select_form.roastprofile_select }}
 
 div.detail
-  p {{ roastprofile.name }}
-  p {{ roastprofile.date }}
+  ul
+    li 
+      p {{ roastprofile.name }}
+    li 
+      p {{ roastprofile.date }}
+    li
+      input(type="button", id="listen-newprofile", value="Start Recording a New Profile")
   div(id="profile-chart")
 
 div#comments
@@ -44,15 +49,18 @@ script(src="{% static 'javascripts/d3_visualization/line_chart/lineChart.js' %}"
 script(src="{% static 'javascripts/d3_visualization/line_chart/lineChartModel.js' %}")
 script(src="{% static 'javascripts/ajaxModels/setupAjax.js' %}")
 script(src="{% static 'javascripts/ajaxModels/tempPoint.js' %}")
+script(src="{% static 'javascripts/ajaxModels/roastProfile.js' %}")
 
 script
   // TODO: Development mode, variables exposed.  Close this when finished.
+  var thisCoffeeID = {{ roastprofile.coffee.id }}
   var thisRoastProfileID = {{ roastprofile.id }}
 
   var commentCreateFormURL = "{% url 'ajax-temppoint-comment-create-form' %}"
   var commentUpdateURL = "{% url 'ajax-comment-update' %}"
   var commentCreateURL = "{% url 'ajax-temppoint-comment-create' %}"
   var commentDeleteURL = "{% url 'ajax-comment-delete' %}"
+  var roastProfileCreateURL = "{% url 'ajax-roastprofile-create' %}"
   var getRoastProfileGraphDataURL = "{% url 'ajax-roastprofile-graph-data' %}"
 
   var commentIconURL = "{% static 'svg_icons/comment2.svg' %}"
