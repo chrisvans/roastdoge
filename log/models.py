@@ -27,23 +27,23 @@ class RoastProfile(models.Model):
         This method grabs all of the associated TempPoints for this RoastProfile,
         and formats them into a suitable data structure for a d3 line chart.
         """
-        if self.temppoint_set.all().exists():
-            temp_points = self.temppoint_set.all().order_by('time')
-            values_list = []
-            for temp_point in temp_points:
-                values_list.append(
-                    {
-                    'x':temp_point.time,
-                    'y':float(temp_point.temperature), 
-                    'id': temp_point.id,
-                    'hasComments': temp_point.pointcomment_set.all().exists(),
-                    }
-                )
-            data = {
-                'values': values_list,
-                'key': self.name,
-                'id': self.id,
-            }
+
+        temp_points = self.temppoint_set.all().order_by('time')
+        values_list = []
+        for temp_point in temp_points:
+            values_list.append(
+                {
+                'x':temp_point.time,
+                'y':float(temp_point.temperature), 
+                'id': temp_point.id,
+                'hasComments': temp_point.pointcomment_set.all().exists(),
+                }
+            )
+        data = {
+            'values': values_list,
+            'key': self.name,
+            'id': self.id,
+        }
 
         return data
 

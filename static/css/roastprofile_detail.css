@@ -1,3 +1,7 @@
 i.fa {
 	cursor: pointer;
 }
+
+.svg-comment-icon {
+    color: green;
+}
