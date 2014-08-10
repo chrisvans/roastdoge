@@ -4,6 +4,9 @@ function tempPointModel(options) {
 
   // This model is intended to control the CRUD interactions between the tempPoint model and it's child
   // relation, pointComments.
+
+  // Each ajax method returns itself, and it is expected that you should use the returned object's '.done', '.fail', and '.always'
+  // methods to control what happens in regard to responses and changes to the HTML structure.
   self.__init__ = function(options) {
       self.roastProfileID = options.roastProfileID
       self.id = options.id
@@ -77,6 +80,8 @@ function tempPointModel(options) {
       dataType: 'json',
       success: function(response) {
 
+        // response = {}
+
       }
     })
   }
@@ -93,6 +98,11 @@ function tempPointModel(options) {
       },
       dataType: 'json',
       success: function(response) {
+
+        // response = {
+        //     'deletedCommentID': commentID,
+        //     'hasComments': Boolean,
+        // }
 
       }
     })
@@ -113,6 +123,10 @@ function tempPointModel(options) {
         }
       },
       success: function(response) {
+
+        // response = {
+        //   data: "Formatted HTML of comment input form & previous comments for this tempPoint" 
+        // }
 
       },
       error: function(jqXHR, textStatus, errorThrown ) {

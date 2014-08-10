@@ -4,7 +4,10 @@ function roastProfileModel(options) {
   // Initialize own attributes based off of the object passed into the creation function
 
   // This model is intended to control the CRUD interactions between the roastProfile model and it's child
-  // relation, tempPoint, as well as responses and changes to the HTML structure to display changes.
+  // relation, tempPoint.
+
+  // Each ajax method returns itself, and it is expected that you should use the returned object's '.done', '.fail', and '.always'
+  // methods to control what happens in regard to responses and changes to the HTML structure.
   self.__init__ = function(options) {
       self.id = options.id
       self.URL = options.URL
@@ -28,6 +31,11 @@ function roastProfileModel(options) {
         
         self.id = response.roastProfileID;
 
+        // response = {
+        //     'roastProfileID': roastprofile.id,
+        //     'roastProfileGraphData': roastprofile.get_temp_graph_data(),
+        // }
+
       }
     })
   }
@@ -41,6 +49,10 @@ function roastProfileModel(options) {
       },
       dataType: 'json',
       success: function(response) {
+
+        // response = {
+        //     'deletedRoastProfileID': roastProfileID
+        // }
 
       }
     })
@@ -58,6 +70,10 @@ function roastProfileModel(options) {
       success: function(response) {
 
         self.graphData = response.graphData
+
+        // response = {
+        //     'graphData': roastprofile.get_temp_graph_data()
+        // }
 
       }
     })
