@@ -1,0 +1,88 @@
+{% extends 'base.jade' %}
+{% load staticfiles %}
+
+{% block title%}Profile Detail{% endblock title %} RoastDoge
+
+{% block css %}
+link(href='{% static "javascripts/d3_visualization/css/nv.d3.css" %}', rel='stylesheet', type='text/css')
+link(href='{% static "javascripts/d3_visualization/css/d3_vis.css" %}', rel='stylesheet', type='text/css', media='screen')
+link(href='{% static "css/roastprofile_detail.css" %}', rel='stylesheet', type='text/css', media='screen')
+{% endblock css %}
+
+{% block content %}
+
+h3
+  ul
+    li
+      a(href="{% url 'coffeeroastprofile-list' roastprofile.coffee.id %}") Back to Profile List
+    li
+      a(href="{% url 'roastprofile-delete' roastprofile.id %}") Delete This Profile
+    li
+      p Compare with another roast profile - {{ roastprofile.get_roastprofile_select_form.roastprofile_select }}
+
+div.detail
+  ul
+    li 
+      p {{ roastprofile.name }}
+    li 
+      p {{ roastprofile.date }}
+    li
+      input(type="button", id="listen-newprofile", value="Start Recording a New Profile")
+  div(id="profile-chart")
+
+div#comments
+
+{% endblock content %}
+
+{% block javascripts %}
+
+script(src='{% static "javascripts/d3_visualization/d3.v2.min.js" %}')
+script(src='{% static "javascripts/d3_visualization/nv.d3.min.js" %}')
+script(src='{% static "javascripts/d3_visualization/tooltip.js" %}')
+script(src='{% static "javascripts/d3_visualization/utils.js" %}')
+script(src='{% static "javascripts/d3_visualization/legend.js" %}')
+script(src='{% static "javascripts/d3_visualization/axis.js" %}')
+script(src="{% static 'javascripts/d3_visualization/line_chart/line.js' %}")
+script(src="{% static 'javascripts/d3_visualization/line_chart/lineChart.js' %}")
+script(src="{% static 'javascripts/d3_visualization/line_chart/lineChartModel.js' %}")
+script(src="{% static 'javascripts/ajaxModels/setupAjax.js' %}")
+script(src="{% static 'javascripts/ajaxModels/tempPoint.js' %}")
+script(src="{% static 'javascripts/ajaxModels/roastProfile.js' %}")
+
+script
+  // TODO: Development mode, variables exposed.  Close this when finished.
+  var thisCoffeeID = {{ roastprofile.coffee.id }}
+  var thisRoastProfileID = {{ roastprofile.id }}
+
+  var URL = {
+    'roastProfile': {
+      'create': "{% url 'ajax-roastprofile-create' %}",
+      'getRoastProfileGraphData': "{% url 'ajax-roastprofile-graph-data' %}",
+    },
+    'tempPoint': {
+      'commentCreateForm': "{% url 'ajax-temppoint-comment-create-form' %}",
+      'commentUpdate': "{% url 'ajax-comment-update' %}",
+      'commentCreate': "{% url 'ajax-temppoint-comment-create' %}",
+      'commentDelete': "{% url 'ajax-comment-delete' %}",
+      'commentIcon': "{% static 'svg_icons/comment2.svg' %}",
+    },
+  }
+
+  var selectElement = '#profile-chart';
+
+  // This MUST be updated with the id of any roast profile that gets added to the chart, with the value incrementing +1 each time
+  // seriesMap is used to translate the roastProfile's ID to the series in which is belongs.  Each time a new line is added,
+  // It's series is +1 of the last.  This way, we can definitively say 'RoastProfile with ID 5 belongs to lines with series 3'.
+  // This seriesMap is stuffed onto the lineChartVis, and there should be a separate one for each chart that would exist.
+  var seriesMap = {}
+  seriesMap[thisRoastProfileID] = '0'
+
+  // Variables for the first line we draw, and the graph itself.
+  var data = [{{ roastprofile.get_temp_graph_data_JSON|safe }}];
+  var margin = { top: 20, right: 20, bottom: 50, left: 40 };
+  var width = 500 - margin.left - margin.right;
+  var height = 350 - margin.top - margin.bottom;
+
+script(src="{% static 'javascripts/profiling/roastprofile_detail.js' %}")
+
+{% endblock javascripts %}
