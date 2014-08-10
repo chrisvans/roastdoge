@@ -213,7 +213,7 @@ $("#listen-newprofile").click(function() {
 
       console.log("Begin assery")
 
-      var roastTronAjax = $.post(ROASTTRON_URL, {'record':'1'})
+      var roastTronAjax = $.post(ROASTTRON_URL+'?record=1', {})
         .done(function (response) { 
           console.log(response)
       })
@@ -227,7 +227,7 @@ $("#listen-newprofile").click(function() {
     $(this).data("listening", false)
     $(this).val("Start Recording a New Profile")
 
-    var roastTronAjax = $.post(ROASTTRON_URL, {'record':'1'})
+    var roastTronAjax = $.post(ROASTTRON_URL+'?record=0', {})
       .done(function (response) { 
         console.log(response)
     })
