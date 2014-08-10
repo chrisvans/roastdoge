@@ -209,9 +209,7 @@ $("#listen-newprofile").click(function() {
       // REPLACE ME - URL to send to RoastTron, so it knows where to send data to
       var HARD_CODED_URL = 'http%3A//roastdoge.herokuapp.com/roastprofile/' + roastProfile.id.toString() + '/temppoint/create/'
       // REPLACE ME - RoastTron URL
-      ROASTTRON_URL = 'https://agent.electricimp.com/-bmsnEgKu4Wy' //returnURL=' + HARD_CODED_URL
-
-      console.log("Begin assery")
+      ROASTTRON_URL = 'https://agent.electricimp.com/-bmsnEgKu4Wy/' //returnURL=' + HARD_CODED_URL
 
       var roastTronAjax = $.post(ROASTTRON_URL+'?record=1', {})
         .done(function (response) { 
