@@ -35,4 +35,8 @@ urlpatterns = patterns('',
         ajax.roastprofile_create,
         name='ajax-roastprofile-create'
     ),
+    url(r'^roastprofile/delete/$',
+        ajax.roastprofile_delete,
+        name='ajax-roastprofile-delete'
+    ),
 )

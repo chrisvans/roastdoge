@@ -6,6 +6,8 @@ html
     title {% block title%} {% endblock title %} RoastDoge
 
     link(href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css", rel="stylesheet")
+    script(src="{% static 'javascripts/jquery-2.1.1.min.js' %}")
+    script(src="{% static 'javascripts/jquery.cookie.js' %}")
     {% block css %}
     {% endblock css %}
 

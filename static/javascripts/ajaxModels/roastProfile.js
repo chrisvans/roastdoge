@@ -10,6 +10,7 @@ function roastProfileModel(options) {
         roastProfile.id = options.id
         roastProfile.roastProfileCreateURL = options.roastProfileCreateURL
         roastProfile.tempPointCreateURL = options.tempPointCreateURL
+        roastProfile.roastProfileDeleteURL = options.roastProfileDeleteURL
         roastProfile.graphData = null
     }
 
@@ -29,6 +30,20 @@ function roastProfileModel(options) {
         success: function(response) {
           
           roastProfile.id = response.roastProfileID;
+
+        }
+      })
+    }
+
+    roastProfile.delete = function() {
+      return $.ajax({
+        url: roastProfile.roastProfileDeleteURL,
+        type: 'POST',
+        data: {
+          'roastProfileID': roastProfile.id,
+        },
+        dataType: 'json',
+        success: function(response) {
 
         }
       })

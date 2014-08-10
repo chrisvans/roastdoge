@@ -1,6 +1,10 @@
 {% extends 'base.jade' %}
 {% load staticfiles %}
 
+{% block css %}
+link(href='{% static "css/coffeeroastprofile_list.css" %}', rel='stylesheet', type='text/css', media='screen')
+{% endblock css %}
+
 {% block content %}
 
 h3 List of Profiles
@@ -9,8 +13,18 @@ h4
 
 ul
   {% for profile in roastprofile_list %}
-  li
+  li(id="id_roastprofile_{{profile.id}}")
+    i.fa.fa-times.roastprofile-delete(id="{{profile.id}}", title="Delete Profile")
     a(href="{% url 'roastprofile-detail' profile.id %}") {{ profile.name }} {% with count=profile.get_pointcomment_count %}{% if count != 0 %}: {{count}} comments. {% endif %}{% endwith %}
   {% endfor %}
 
 {% endblock content %}
+
+{% block javascripts %}
+script
+  var roastProfileDeleteURL = "{% url 'ajax-roastprofile-delete' %}"
+script(src="{% static 'javascripts/ajaxModels/setupAjax.js' %}")
+script(src="{% static 'javascripts/ajaxModels/tempPoint.js' %}")
+script(src="{% static 'javascripts/ajaxModels/roastProfile.js' %}")
+script(src="{% static 'javascripts/coffee/coffeeroastprofile_list.js' %}")
+{% endblock javascripts %}

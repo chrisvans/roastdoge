@@ -67,6 +67,16 @@ def roastprofile_create(request):
 
     return HttpResponse(simplejson.dumps(data))
 
+def roastprofile_delete(request):
+
+    models.RoastProfile.objects.get(id=request.POST.get('roastProfileID')).delete()
+
+    data = {
+        'deletedRoastProfileID': request.POST.get('roastProfileID')
+    }
+    
+    return HttpResponse(simplejson.dumps(data))
+
 def roastprofile_graph_data(request):
 
     roastprofile_id = request.GET.get('roastProfileID')
