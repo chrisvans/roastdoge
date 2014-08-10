@@ -79,7 +79,7 @@ class RoastProfile(models.Model):
 class TempPoint(models.Model):
     temperature = models.CharField(max_length=255, null=False, default=u'212.0')
     time = models.PositiveIntegerField()
-    roast_profile = models.ForeignKey('log.RoastProfile', null=False)
+    roast_profile = models.ForeignKey(RoastProfile, null=False)
 
     def __unicode__(self):
         if self.roast_profile.coffee:
@@ -98,6 +98,6 @@ class TempPoint(models.Model):
 
 
 class PointComment(TimeStampedModel):
-    point = models.ForeignKey('log.TempPoint', null=True, blank=True)
+    point = models.ForeignKey(TempPoint, null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
     # author = models.ForeignKey
