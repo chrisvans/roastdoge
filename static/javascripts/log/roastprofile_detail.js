@@ -38,7 +38,7 @@ var pointIconCallback = function(visualization) {
           var iconSize = 16;
           parentG
             .append("image")
-              .attr("xlink:href", commentIconURL)
+              .attr("xlink:href", URL.tempPoint.commentIcon)
               .attr("x", thisCircle.attr('cx'))
               .attr("y", (parseInt(thisCircle.attr('cy')) - iconSize).toString())
               .attr("width", iconSize)
@@ -100,11 +100,7 @@ var pointClickCallback = function(visualization) {
     var pointOptions = {
       roastProfileID: element.series.id,
       id: element.point.id,
-      commentCreateFormURL: commentCreateFormURL,
-      commentCreateURL: commentCreateURL,
-      commentUpdateURL: commentUpdateURL,
-      commentDeleteURL: commentDeleteURL,
-      commentIconURL: commentIconURL,
+      URL: URL.tempPoint,
       visualization: visualization,
     }
     var tempPoint = tempPointModel(pointOptions);
@@ -154,7 +150,7 @@ var setRoastProfileGraphData = function(roastProfileID, callback) {
 
   var roastProfile = roastProfileModel({
     'id': roastProfileID,
-    'roastProfileCreateURL': roastProfileCreateURL,
+    'URL': URL.roastProfile,
   })
 
   var ajaxCall = roastProfile.getGraphData();

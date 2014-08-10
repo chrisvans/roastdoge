@@ -1,71 +1,68 @@
 function roastProfileModel(options) {
-    var roastProfile = {};
+  var self = {};
 
-    // Initialize own attributes based off of the object passed into the creation function
-    // You could consider 'roastProfile' to be 'self'
+  // Initialize own attributes based off of the object passed into the creation function
 
-    // This model is intended to control the CRUD interactions between the roastProfile model and it's child
-    // relation, tempPoint, as well as responses and changes to the HTML structure to display changes.
-    roastProfile.__init__ = function(options) {
-        roastProfile.id = options.id
-        roastProfile.roastProfileCreateURL = options.roastProfileCreateURL
-        roastProfile.tempPointCreateURL = options.tempPointCreateURL
-        roastProfile.roastProfileDeleteURL = options.roastProfileDeleteURL
-        roastProfile.graphData = null
-    }
+  // This model is intended to control the CRUD interactions between the roastProfile model and it's child
+  // relation, tempPoint, as well as responses and changes to the HTML structure to display changes.
+  self.__init__ = function(options) {
+      self.id = options.id
+      self.URL = options.URL
+      self.graphData = null
+  }
 
-    roastProfile.__init__(options)
+  self.__init__(options)
 
-    roastProfile.create = function() {
-      
-      // thisCoffeeID is a 'global' variable defining the coffee that this roastprofile ( detail page ) is a child of.
+  self.create = function() {
+    
+    // thisCoffeeID is a 'global' variable defining the coffee that this roastprofile ( detail page ) is a child of.
 
-      return $.ajax({
-        url: roastProfile.roastProfileCreateURL,
-        type: 'POST',
-        data: {
-          'coffeeID': thisCoffeeID,
-        },
-        dataType: 'json',
-        success: function(response) {
-          
-          roastProfile.id = response.roastProfileID;
+    return $.ajax({
+      url: self.URL.create,
+      type: 'POST',
+      data: {
+        'coffeeID': thisCoffeeID,
+      },
+      dataType: 'json',
+      success: function(response) {
+        
+        self.id = response.roastProfileID;
 
-        }
-      })
-    }
+      }
+    })
+  }
 
-    roastProfile.delete = function() {
-      return $.ajax({
-        url: roastProfile.roastProfileDeleteURL,
-        type: 'POST',
-        data: {
-          'roastProfileID': roastProfile.id,
-        },
-        dataType: 'json',
-        success: function(response) {
+  self.delete = function() {
+    return $.ajax({
+      url: self.URL.delete,
+      type: 'POST',
+      data: {
+        'roastProfileID': self.id,
+      },
+      dataType: 'json',
+      success: function(response) {
 
-        }
-      })
-    }
+      }
+    })
+  }
 
-    roastProfile.getGraphData = function() {
-      
-      return $.ajax({
-        url: getRoastProfileGraphDataURL,
-        type: 'GET',
-        data: {
-          'roastProfileID': roastProfile.id,
-        },
-        dataType: 'json',
-        success: function(response) {
+  self.getGraphData = function() {
+    
+    return $.ajax({
+      url: self.URL.getRoastProfileGraphData,
+      type: 'GET',
+      data: {
+        'roastProfileID': self.id,
+      },
+      dataType: 'json',
+      success: function(response) {
 
-          roastProfile.graphData = response.graphData
+        self.graphData = response.graphData
 
-        }
-      })
+      }
+    })
 
-    }
+  }
 
-    return roastProfile
+  return self
 }

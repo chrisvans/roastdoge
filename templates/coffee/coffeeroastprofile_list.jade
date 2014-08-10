@@ -22,7 +22,11 @@ ul
 
 {% block javascripts %}
 script
-  var roastProfileDeleteURL = "{% url 'ajax-roastprofile-delete' %}"
+  var URL = {
+    'roastProfile': {
+      'delete': "{% url 'ajax-roastprofile-delete' %}"
+    }
+  }
 script(src="{% static 'javascripts/ajaxModels/setupAjax.js' %}")
 script(src="{% static 'javascripts/ajaxModels/tempPoint.js' %}")
 script(src="{% static 'javascripts/ajaxModels/roastProfile.js' %}")

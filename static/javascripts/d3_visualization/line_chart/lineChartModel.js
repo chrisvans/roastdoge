@@ -1,50 +1,50 @@
 // Create an object to handle data storage, chart creation and update
 function lineChartVisualization(options) {
 
-  var visualization = {}
+  var self = {}
 
   // Create object with parameters required for chart creation
   // You can set these attributes manually, and then call visualization.updateChart();
-  visualization.__init__ = function(options) {
+  self.__init__ = function(options) {
 
-    visualization.selectElement = options.selectElement;
+    self.selectElement = options.selectElement;
 
     // each object within the data attr now supports an extra boolean key "hidden", which will upon update, hide or unhide the line
-    visualization.data = options.data;
+    self.data = options.data;
 
-    visualization.margin = options.margin;
-    visualization.width = options.width;
-    visualization.height = options.height;
-    visualization.xAxisLabel = options.xAxisLabel || 'Time in Minutes';
-    visualization.yAxisLabel = options.yAxisLabel || 'Temperature';
-    visualization.nvchart = '';
-    visualization.tempMeasurement = options.tempMeasurement || 'C';  
-    visualization.storedCallbacks = options.storedCallbacks || [];
-    visualization.preUpdateCalls = options.preUpdateCalls || [];
-    visualization.seriesMap = options.seriesMap || {};
+    self.margin = options.margin;
+    self.width = options.width;
+    self.height = options.height;
+    self.xAxisLabel = options.xAxisLabel || 'Time in Minutes';
+    self.yAxisLabel = options.yAxisLabel || 'Temperature';
+    self.nvchart = '';
+    self.tempMeasurement = options.tempMeasurement || 'C';  
+    self.storedCallbacks = options.storedCallbacks || [];
+    self.preUpdateCalls = options.preUpdateCalls || [];
+    self.seriesMap = options.seriesMap || {};
 
   }
 
   // Run the init method
-  visualization.__init__(options);
+  self.__init__(options);
 
-  visualization.callPreUpdateCalls = function() {
-    for (var i=0; i<visualization.preUpdateCalls.length; i++) {
-      visualization.preUpdateCalls[i](visualization);
+  self.callPreUpdateCalls = function() {
+    for (var i=0; i<self.preUpdateCalls.length; i++) {
+      self.preUpdateCalls[i](self);
     }    
   }
 
-  visualization.callStoredCallbacks = function() {
-    for (var i=0; i<visualization.storedCallbacks.length; i++) {
-      visualization.storedCallbacks[i](visualization);
+  self.callStoredCallbacks = function() {
+    for (var i=0; i<self.storedCallbacks.length; i++) {
+      self.storedCallbacks[i](self);
     }
   }
 
   // Known issue: Chart does not scale based on visible lines, but on all lines regardless.
-  visualization.setLinesVisibility = function() {
-    for (var i=0; i<visualization.data.length; i++) {
-      lineG = d3.select(visualization.selectElement + ' svg g g g.nv-linesWrap g.nvd3.nv-wrap.nv-line g g.nv-groups > g.nv-group.nv-series-' + i)
-      if (visualization.data[i].hidden) {
+  self.setLinesVisibility = function() {
+    for (var i=0; i<self.data.length; i++) {
+      lineG = d3.select(self.selectElement + ' svg g g g.nv-linesWrap g.nvd3.nv-wrap.nv-line g g.nv-groups > g.nv-group.nv-series-' + i)
+      if (self.data[i].hidden) {
         lineG.style('visibility', 'hidden')
       } else {
         lineG.style('visibility', 'visible')
@@ -52,126 +52,126 @@ function lineChartVisualization(options) {
     }
   }
 
-  visualization.createChart = function (callbacks) {
+  self.createChart = function (callbacks) {
 
-    visualization.xScale = d3.scale.linear()
-      .domain([0, d3.max(visualization.data, function(d) { return d.values; })])
-      .range([0, d3.max(visualization.data, function(d) { return d.values; })]);
+    self.xScale = d3.scale.linear()
+      .domain([0, d3.max(self.data, function(d) { return d.values; })])
+      .range([0, d3.max(self.data, function(d) { return d.values; })]);
 
     nv.addGraph(function() {
-      visualization.nvchart = nv.models.lineChart()
+      self.nvchart = nv.models.lineChart()
         .color(d3.scale.category10().range())
         .showLegend(false);
 
-      visualization.nvchart.x(function(d,i) { 
+      self.nvchart.x(function(d,i) { 
         var time = new Date(d.x)
         return time; 
       })
 
-      visualization.nvchart.xAxis // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
-        .axisLabel(visualization.xAxisLabel)
+      self.nvchart.xAxis // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
+        .axisLabel(self.xAxisLabel)
         .tickFormat(d3.format(',.0f'))
       //.tickFormat(function(d) { return d3.time.format('%b %d')(new Date(d)); })
-        .scale(visualization.xScale);
+        .scale(self.xScale);
 
-      visualization.nvchart.yAxis
-        .axisLabel(visualization.yAxisLabel)
+      self.nvchart.yAxis
+        .axisLabel(self.yAxisLabel)
         .tickFormat( function(d) {
           formatted_tick = d3.format(',.1f')(d);
-          return formatted_tick + ' ' + visualization.tempMeasurement;
+          return formatted_tick + ' ' + self.tempMeasurement;
         });
 
-      d3.select(visualization.selectElement)
-        .attr("style", "height:" + (visualization.height + visualization.margin.top + visualization.margin.bottom).toString() )
+      d3.select(self.selectElement)
+        .attr("style", "height:" + (self.height + self.margin.top + self.margin.bottom).toString() )
 
-      d3.select(visualization.selectElement)
+      d3.select(self.selectElement)
         .append('svg')
-          .attr("height", visualization.height + visualization.margin.top + visualization.margin.bottom)
-          .datum(visualization.data)
-          .call(visualization.nvchart);
+          .attr("height", self.height + self.margin.top + self.margin.bottom)
+          .datum(self.data)
+          .call(self.nvchart);
 
       nv.utils.windowResize( function() {
-        d3.select(visualization.selectElement + ' svg')
+        d3.select(self.selectElement + ' svg')
         .transition()
-          .call(visualization.nvchart);
-        visualization.nvchart.update();
+          .call(self.nvchart);
+        self.nvchart.update();
       });
       
       function callCallbacks() {
         if ((callbacks) && (callbacks.length > 0)) {
           for (var i=0; i<callbacks.length; i++) {
-            callbacks[i](visualization)
+            callbacks[i](self)
           }
         }
       }
 
       callCallbacks();
 
-      visualization.callStoredCallbacks()
+      self.callStoredCallbacks()
 
       nv.utils.windowResize(function() {
-        visualization.callPreUpdateCalls();
-        visualization.nvchart.update;
-        setTimeout(visualization.callStoredCallbacks, 1000);
+        self.callPreUpdateCalls();
+        self.nvchart.update;
+        setTimeout(self.callStoredCallbacks, 1000);
       })
 
-      return visualization.nvchart;
+      return self.nvchart;
 
     });
 
-    visualization.setLinesVisibility()
+    self.setLinesVisibility()
 
   }
 
-  visualization.updateChart = function(callbacks) {
+  self.updateChart = function(callbacks) {
 
-    visualization.callPreUpdateCalls()
+    self.callPreUpdateCalls()
 
-    visualization.xScale = d3.scale.linear()
-      .domain([0, d3.max(visualization.data, function(d) { return d.values; })])
-      .range([0, d3.max(visualization.data, function(d) { return d.values; })]);
+    self.xScale = d3.scale.linear()
+      .domain([0, d3.max(self.data, function(d) { return d.values; })])
+      .range([0, d3.max(self.data, function(d) { return d.values; })]);
 
-    visualization.nvchart.x(function(d,i) { 
+    self.nvchart.x(function(d,i) { 
       var time = new Date(d.x)
       return time; 
     })
 
-    visualization.nvchart.xAxis // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
-      .axisLabel(visualization.xAxisLabel)
+    self.nvchart.xAxis // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
+      .axisLabel(self.xAxisLabel)
       .tickFormat(d3.format(',.0f'))
     //.tickFormat(function(d) { return d3.time.format('%b %d')(new Date(d)); })
-      .scale(visualization.xScale);
+      .scale(self.xScale);
 
-    visualization.nvchart.yAxis
-      .axisLabel(visualization.xAxisLabel)
+    self.nvchart.yAxis
+      .axisLabel(self.xAxisLabel)
       .tickFormat( function(d) {
         formatted_tick = d3.format(',.1f')(d);
-        return formatted_tick + ' ' + visualization.tempMeasurement;
+        return formatted_tick + ' ' + self.tempMeasurement;
       });
 
-    d3.select(visualization.selectElement)
-      .attr("style", "height:" + (visualization.height + visualization.margin.top + visualization.margin.bottom).toString() )
+    d3.select(self.selectElement)
+      .attr("style", "height:" + (self.height + self.margin.top + self.margin.bottom).toString() )
 
-    d3.select(visualization.selectElement + ' svg')
-      .attr("height", visualization.height + visualization.margin.top + visualization.margin.bottom)
-      .datum(visualization.data)
+    d3.select(self.selectElement + ' svg')
+      .attr("height", self.height + self.margin.top + self.margin.bottom)
+      .datum(self.data)
       .transition()
-      .call(visualization.nvchart);
+      .call(self.nvchart);
 
-    visualization.nvchart.update();
+    self.nvchart.update();
 
     if ((callbacks) && (callbacks.length > 0)) {
       for (var i=0; i<callbacks.length; i++) {
-        callbacks[i](visualization)
+        callbacks[i](self)
       }
     }
 
-    visualization.setLinesVisibility()
+    self.setLinesVisibility()
 
-    setTimeout(visualization.callStoredCallbacks, 1000)
+    setTimeout(self.callStoredCallbacks, 1000)
 
   }
 
-  return visualization;
+  return self;
 
 }

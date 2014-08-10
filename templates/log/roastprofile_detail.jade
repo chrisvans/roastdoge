@@ -54,19 +54,26 @@ script
   var thisCoffeeID = {{ roastprofile.coffee.id }}
   var thisRoastProfileID = {{ roastprofile.id }}
 
-  var commentCreateFormURL = "{% url 'ajax-temppoint-comment-create-form' %}"
-  var commentUpdateURL = "{% url 'ajax-comment-update' %}"
-  var commentCreateURL = "{% url 'ajax-temppoint-comment-create' %}"
-  var commentDeleteURL = "{% url 'ajax-comment-delete' %}"
-  var roastProfileCreateURL = "{% url 'ajax-roastprofile-create' %}"
-  var getRoastProfileGraphDataURL = "{% url 'ajax-roastprofile-graph-data' %}"
+  var URL = {
+    'roastProfile': {
+      'create': "{% url 'ajax-roastprofile-create' %}",
+      'getRoastProfileGraphData': "{% url 'ajax-roastprofile-graph-data' %}",
+    },
+    'tempPoint': {
+      'commentCreateForm': "{% url 'ajax-temppoint-comment-create-form' %}",
+      'commentUpdate': "{% url 'ajax-comment-update' %}",
+      'commentCreate': "{% url 'ajax-temppoint-comment-create' %}",
+      'commentDelete': "{% url 'ajax-comment-delete' %}",
+      'commentIcon': "{% static 'svg_icons/comment2.svg' %}",
+    },
+  }
 
-  var commentIconURL = "{% static 'svg_icons/comment2.svg' %}"
   var selectElement = '#profile-chart';
 
   // This MUST be updated with the id of any roast profile that gets added to the chart, with the value incrementing +1 each time
   // seriesMap is used to translate the roastProfile's ID to the series in which is belongs.  Each time a new line is added,
   // It's series is +1 of the last.  This way, we can definitively say 'RoastProfile with ID 5 belongs to lines with series 3'.
+  // This seriesMap is stuffed onto the lineChartVis, and there should be a separate one for each chart that would exist.
   var seriesMap = {}
   seriesMap[thisRoastProfileID] = '0'
 
