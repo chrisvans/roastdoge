@@ -5,7 +5,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^', include('log.urls')),
+    url(r'^', include('profiling.urls')),
     url(r'^coffee/', include('coffee.urls')),
 )
 

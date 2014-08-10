@@ -28,7 +28,7 @@ class Coffee(models.Model):
         """
         Method for generating test profile data.
         """
-        from log.models import RoastProfile, TempPoint
+        from profiling.models import RoastProfile, TempPoint
 
         profile = RoastProfile.objects.create(
             coffee=self, 
