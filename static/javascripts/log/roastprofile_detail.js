@@ -2,27 +2,27 @@
 // a point has comments on it.
 // TODO: This should be part of one of the models.
 
-var pointIconPreCall = function() {
-  // Remove all previous comments icons.
-  d3.selectAll('.svg-comment-icon').remove()
+var pointIconPreCall = function(visualization) {
+  // Remove all previous comments icons within this visualization.
+  d3.select(visualization.selectElement).selectAll('.svg-comment-icon').remove()
 }
-var pointIconCallback = function() {
+var pointIconCallback = function(visualization) {
 
   // Iterate over each element in data, where each element represents a line
-  for (var dataIndex=0; dataIndex<lineChartVis.data.length; dataIndex++) {
+  for (var dataIndex=0; dataIndex<visualization.data.length; dataIndex++) {
 
     // If the data has a hidden attribute set to true, that line is hidden, so we don't want to draw it's comment icons
-    if (!lineChartVis.data[dataIndex].hidden) {
+    if (!visualization.data[dataIndex].hidden) {
 
       // Find the id on the data line, which is the id of the roastprofile associated with this line.
-      var roastLineID = lineChartVis.data[dataIndex].id.toString()
+      var roastLineID = visualization.data[dataIndex].id.toString()
 
       // Construct the select string, we're looking for all of the circles ( points ) on a given roast profile's line
-      var selectString = 'g.nv-group.nv-series-' + seriesMap[roastLineID] + ' > circle.nv-point'
+      var selectString = 'g.nv-group.nv-series-' + visualization.seriesMap[roastLineID] + ' > circle.nv-point'
 
       // Associate the data with each circle
       // TODO: Instead of attaching the whole data array to each circle, attach each corresponding value ( from data[x].values ) to the circle
-      d3.selectAll(selectString).datum(lineChartVis.data);
+      d3.selectAll(selectString).datum(visualization.data);
 
       // Iterate over each circle, that now has the associated data
       d3.selectAll(selectString).each(function(d, i) { 
@@ -85,6 +85,7 @@ lineOptions = {
   // Any functions put into this list will be called on createChart and updateChart.
   'storedCallbacks': [pointIconCallback],
   'preUpdateCalls': [pointIconPreCall],
+  'seriesMap': seriesMap,
 }
 
 // Initialize Chart Model.
@@ -93,9 +94,9 @@ var lineChartVis = lineChartVisualization(lineOptions);
 // Callback that sets all points in the graph to, once clicked, create a matching tempPoint model
 // and create an empty comment form, with all previous comments of that tempPoint listed below it.
 // This does not need to be updated, it will always run on any click of any point created within this chart.
-var pointClickCallback = function() {
-  lineChartVis.nvchart.lines.dispatch.on('elementClick', null)
-  lineChartVis.nvchart.lines.dispatch.on('elementClick', function(element) {
+var pointClickCallback = function(visualization) {
+  visualization.nvchart.lines.dispatch.on('elementClick', null)
+  visualization.nvchart.lines.dispatch.on('elementClick', function(element) {
     var pointOptions = {
       roastProfileID: element.series.id,
       id: element.point.id,
@@ -104,9 +105,45 @@ var pointClickCallback = function() {
       commentUpdateURL: commentUpdateURL,
       commentDeleteURL: commentDeleteURL,
       commentIconURL: commentIconURL,
+      visualization: visualization,
     }
     var tempPoint = tempPointModel(pointOptions);
-    tempPoint.commentCreateForm();
+    var ajaxCallCommentCreateForm = tempPoint.commentCreateForm();
+    var callback = function(response) {
+
+      $('#comments').html(response.data);
+
+      // Setup click handler for the submit button
+      $('#submit-pointcomment').click(function() {
+        var ajaxCallCommentCreate = tempPoint.commentCreate('#id_comment');
+        ajaxCallCommentCreate.done(function(){
+          var ajaxCallCommentCreateFormInner = tempPoint.commentCreateForm();
+          tempPoint.createPointIcon();
+          ajaxCallCommentCreateFormInner.done(callback);
+        })
+      })
+
+      // Setup click handler for the delete button.
+      $('.comment-delete').click(function() {
+        commentID = $(this).closest('div.comment').prop('id');
+        var ajaxCallCommentDelete = tempPoint.commentDelete(commentID);
+        ajaxCallCommentDelete.done(function(response) {
+          $('#' + response.deletedCommentID).remove()
+
+          if (!response.hasComments) {
+            d3.select('.svg-comment-icon.temppoint_' + tempPoint.id).remove()
+          }
+        })
+      })
+
+      // Scroll the screen down to the comments div.
+      var target= "div.comments";
+      $('html, body').animate({
+        scrollTop: $(target).offset().top
+      }, 1000);
+    }
+
+    ajaxCallCommentCreateForm.done(callback)
   })
 }
 
@@ -129,14 +166,14 @@ var updateChartGraphData = function(roastProfileID) {
 
     var callback = function(response) {
       var graphData = response.graphData;
-      var seriesCount = Object.keys(seriesMap).length
+      var seriesCount = Object.keys(lineChartVis.seriesMap).length
       
-      var dataAlreadyPresent = (roastProfileID in seriesMap)
+      var dataAlreadyPresent = (roastProfileID in lineChartVis.seriesMap)
 
       if (dataAlreadyPresent) {
-        lineChartVis.data[seriesMap[roastProfileID]] = graphData
+        lineChartVis.data[lineChartVis.seriesMap[roastProfileID]] = graphData
       } else {
-        seriesMap[roastProfileID] = seriesCount.toString()
+        lineChartVis.seriesMap[roastProfileID] = seriesCount.toString()
         lineChartVis.data.push(graphData)
       }
 
@@ -156,6 +193,7 @@ $("#id_roastprofile_select").change(function() {
 
 })
 
+// Setup handler for recording a new profile & stopping the recording process.
 $("#listen-newprofile").click(function() {
   if (!$(this).data("listening")) {
     $(this).data("listening", true)

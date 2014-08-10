@@ -13,6 +13,7 @@ function tempPointModel(options) {
         tempPoint.commentDeleteURL = options.commentDeleteURL
         tempPoint.commentCreateFormURL = options.commentCreateFormURL
         tempPoint.commentIconURL = options.commentIconURL
+        tempPoint.visualization = options.visualization
     }
 
     tempPoint.__init__(options)
@@ -22,16 +23,16 @@ function tempPointModel(options) {
       // Find the index of the roastprofile line in visualization.data, based off of it's id
       // seriesMap must be updated every time a new line is added, so this model knows which 
       // data set it belongs to.
-      var roastProfileIndex = seriesMap[tempPoint.roastProfileID]
+      var roastProfileIndex = tempPoint.visualization.seriesMap[tempPoint.roastProfileID]
 
       // If the line is not set to hidden, then we need to create comment icons on each point that has comments.
-      if (!lineChartVis.data[roastProfileIndex].hidden) {
+      if (!tempPoint.visualization.data[roastProfileIndex].hidden) {
 
-        var roastLineID = lineChartVis.data[roastProfileIndex].id.toString()
+        var roastLineID = tempPoint.visualization.data[roastProfileIndex].id.toString()
         // Grab all the circles within our line's g group.
-        var selectString = 'g.nv-group.nv-series-' + seriesMap[roastLineID] + ' > circle.nv-point'
+        var selectString = 'g.nv-group.nv-series-' + tempPoint.visualization.seriesMap[roastLineID] + ' > circle.nv-point'
         // Attach the data to each circle.
-        d3.selectAll(selectString).datum(lineChartVis.data);
+        d3.selectAll(selectString).datum(tempPoint.visualization.data);
         // Iterate over each circle, passing in the data set.
         // TODO: Attach each circle's own data to itself, rather than passing in the whole data array.
         d3.selectAll(selectString).each(function(d, i) { 
@@ -67,9 +68,9 @@ function tempPointModel(options) {
     }
 
     // Creates a PointComment with the TempPoint as it's parent.
-    tempPoint.commentCreate = function() {
+    tempPoint.commentCreate = function(inputElementSelector) {
       
-      var comment = $('#id_comment').val();
+      var comment = $(inputElementSelector).val();
 
       return $.ajax({
         url: tempPoint.commentCreateURL,
@@ -80,8 +81,6 @@ function tempPointModel(options) {
         },
         dataType: 'json',
         success: function(response) {
-          tempPoint.commentCreateForm();
-          tempPoint.createPointIcon();
 
         }
       })
@@ -99,18 +98,12 @@ function tempPointModel(options) {
         },
         dataType: 'json',
         success: function(response) {
-          $('#' + commentID).remove()
 
-          if (!response.hasComments) {
-            d3.select('.svg-comment-icon.temppoint_' + tempPoint.id).remove()
-          }
         }
       })
     }
 
     // Instantiates a new comment form, and displays all previous comments.
-    // This should NOT be the responsibility of this model, move everything
-    // not involving GET -> Form to the template's file-specific js.
     tempPoint.commentCreateForm = function() {
       return $.ajax({
         url: tempPoint.commentCreateFormURL,
@@ -125,23 +118,6 @@ function tempPointModel(options) {
           }
         },
         success: function(response) {
-
-          $('#comments').html(response.data);
-
-          // Setup click handler for the submit button
-          $('#submit-pointcomment').click(function() {tempPoint.commentCreate()})
-
-          // Setup click handler for the delete button.
-          $('.comment-delete').click(function() {
-            commentID = $(this).closest('div.comment').prop('id');
-            tempPoint.commentDelete(commentID);
-          })
-
-          // Scroll the screen down to the comments div.
-          var target= "div.comments";
-          $('html, body').animate({
-            scrollTop: $(target).offset().top
-          }, 1000);
 
         },
         error: function(jqXHR, textStatus, errorThrown ) {

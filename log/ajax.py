@@ -49,6 +49,7 @@ def comment_delete(request):
     temppoint.pointcomment_set.get(id=request.POST.get('commentID')).delete()
 
     data = {
+        'deletedCommentID': request.POST.get('commentID'),
         'hasComments': temppoint.pointcomment_set.all().exists()
     }
 

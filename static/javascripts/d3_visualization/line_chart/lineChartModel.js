@@ -21,6 +21,7 @@ function lineChartVisualization(options) {
     visualization.tempMeasurement = options.tempMeasurement || 'C';  
     visualization.storedCallbacks = options.storedCallbacks || [];
     visualization.preUpdateCalls = options.preUpdateCalls || [];
+    visualization.seriesMap = options.seriesMap || {};
 
   }
 
@@ -29,13 +30,13 @@ function lineChartVisualization(options) {
 
   visualization.callPreUpdateCalls = function() {
     for (var i=0; i<visualization.preUpdateCalls.length; i++) {
-      visualization.preUpdateCalls[i]();
+      visualization.preUpdateCalls[i](visualization);
     }    
   }
 
   visualization.callStoredCallbacks = function() {
     for (var i=0; i<visualization.storedCallbacks.length; i++) {
-      visualization.storedCallbacks[i]();
+      visualization.storedCallbacks[i](visualization);
     }
   }
 
@@ -99,7 +100,7 @@ function lineChartVisualization(options) {
       function callCallbacks() {
         if ((callbacks) && (callbacks.length > 0)) {
           for (var i=0; i<callbacks.length; i++) {
-            callbacks[i]()
+            callbacks[i](visualization)
           }
         }
       }
@@ -161,7 +162,7 @@ function lineChartVisualization(options) {
 
     if ((callbacks) && (callbacks.length > 0)) {
       for (var i=0; i<callbacks.length; i++) {
-        callbacks[i]()
+        callbacks[i](visualization)
       }
     }
 
