@@ -8,8 +8,8 @@ https://docs.djangoproject.com/en/dev/howto/deployment/wsgi/
 """
 from django.core.wsgi import get_wsgi_application
 from dj_static import Cling
+import os
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings.base")
 
 application = Cling(get_wsgi_application())
-
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings.base")
