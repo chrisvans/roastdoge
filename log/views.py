@@ -1,7 +1,7 @@
 # Django
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.shortcuts import Http404, HttpResponseRedirect, render
+from django.shortcuts import Http404, HttpResponseRedirect, HttpResponse, render
 from django.views import generic
 
 # Ours
@@ -36,3 +36,14 @@ def roastprofile_deleteview(request, roastprofile_id):
     roastprofile.delete()
 
     return HttpResponseRedirect(reverse('coffeeroastprofile-list', kwargs={'coffee_id': coffee.id}))
+
+
+def roastprofile_temppoint_create(request, roastprofile_id):
+ 
+    roastprofile = models.RoastProfile.objects.get(id=roastprofile_id)
+    time = request.POST.get('time')
+    temperature = request.POST.get('temperature')
+
+    models.TempPoint.objects.create(roast_profile=roastprofile, time=time, temperature=temperature)
+
+    return HttpResponse()
