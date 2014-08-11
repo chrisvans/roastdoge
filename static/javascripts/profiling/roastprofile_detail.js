@@ -207,11 +207,11 @@ $("#listen-newprofile").click(function() {
       listenUpdatesID = setInterval(updateChart, 5000);
       
       // REPLACE ME - URL to send to RoastTron, so it knows where to send data to
-      var HARD_CODED_URL = 'http%3A//roastdoge.herokuapp.com/roastprofile/' + roastProfile.id.toString() + '/temppoint/create/'
+      var HARD_CODED_URL = 'roastdoge.herokuapp.com/roastprofile/' + roastProfile.id.toString() + '/temppoint/create/'
       // REPLACE ME - RoastTron URL
       ROASTTRON_URL = 'https://agent.electricimp.com/-bmsnEgKu4Wy/' //returnURL=' + HARD_CODED_URL
 
-      var roastTronAjax = $.post(ROASTTRON_URL+'?record=1', {})
+      var roastTronAjax = $.post(ROASTTRON_URL+'?record=1'+'&getURL='+HARD_CODED_URL, {})
         .done(function (response) { 
           console.log(response)
       })
