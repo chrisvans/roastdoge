@@ -38,14 +38,12 @@ def roastprofile_deleteview(request, roastprofile_id):
     return HttpResponseRedirect(reverse('coffeeroastprofile-list', kwargs={'coffee_id': coffee.id}))
 
 
-from django.views.decorators.csrf import csrf_exempt
-# TODO: Do this the right way.
-@csrf_exempt
+# TODO: Properly use POST instead of GET for this.
 def roastprofile_temppoint_create(request, roastprofile_id):
  
     roastprofile = models.RoastProfile.objects.get(id=roastprofile_id)
-    time = request.POST.get('time')
-    temperature = request.POST.get('temperature')
+    time = request.GET.get('time')
+    temperature = request.GET.get('temperature')
 
     models.TempPoint.objects.create(roast_profile=roastprofile, time=time, temperature=temperature)
 
