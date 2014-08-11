@@ -53,6 +53,7 @@ script
   // TODO: Development mode, variables exposed.  Close this when finished.
   var thisCoffeeID = {{ roastprofile.coffee.id }}
   var thisRoastProfileID = {{ roastprofile.id }}
+  var csrf_token = "{% csrf_token %}"
 
   var URL = {
     'roastProfile': {
