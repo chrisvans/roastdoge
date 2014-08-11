@@ -28,7 +28,7 @@ class RoastProfile(models.Model):
         and formats them into a suitable data structure for a d3 line chart.
         """
 
-        temp_points = self.temppoint_set.all().order_by('time')
+        temp_points = self.temppoint_set.all().order_by('time').prefetch_related('pointcomment_set')
         values_list = []
         for temp_point in temp_points:
             values_list.append(
@@ -66,10 +66,7 @@ class RoastProfile(models.Model):
         return count
 
     def __unicode__(self):
-        if self.coffee:
-            return u'%s - %s' % (self.coffee, self.name)
-        else:
-            return self.name
+        return self.name
 
     class Meta:
         verbose_name = 'Roast Profile'
