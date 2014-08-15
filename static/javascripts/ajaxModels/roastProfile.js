@@ -1,64 +1,57 @@
-function roastProfileModel(options) {
-  var self = {};
+// Depends on setupAjax.js, baseAjaxModel.js, jQuery
 
-  // Initialize own attributes based off of the object passed into the creation function
-
+function RoastProfile(options) {
   // This model is intended to control the CRUD interactions between the roastProfile model and it's child
   // relation, tempPoint.
 
-  // Each ajax method returns itself, and it is expected that you should use the returned object's '.done', '.fail', and '.always'
-  // methods to control what happens in regard to responses and changes to the HTML structure.
-  self.__init__ = function(options) {
-      self.id = options.id
-      self.URL = options.URL
-      self.graphData = null
-  }
+  // Inherit from BaseAjaxModel
+  BaseAjaxModel.apply(this, arguments)
 
-  self.__init__(options)
+  options = (typeof(options) === 'undefined') ? {} : options
 
+  // The variable 'self' is used to represent this, as we want to reference the object within
+  // it's own functions, where the variable 'this' would no longer represent the object.
+  var self = this;
+
+  // Initialize own attributes based off of the object passed into the creation function
+
+  self.modelName = 'RoastProfile'
+  self.coffeeID = self.setAttrOrNull(options.coffeeID)
+  self.graphData = null
+
+  // Overwrites BaseAjaxModel's create, as we want to pass in the related model as a parent.
   self.create = function() {
-    
-    // thisCoffeeID is a 'global' variable defining the coffee that this roastprofile ( detail page ) is a child of.
+
+    self._validateCreate()
 
     return $.ajax({
       url: self.URL.create,
       type: 'POST',
       data: {
-        'coffeeID': thisCoffeeID,
+        'coffeeID': self.coffeeID,
       },
       dataType: 'json',
       success: function(response) {
         
-        self.id = response.roastProfileID;
+        self.id = response.RoastProfileID;
 
         // response = {
-        //     'roastProfileID': roastprofile.id,
+        //     'RoastProfileID': roastprofile.id,
         //     'roastProfileGraphData': roastprofile.get_temp_graph_data(),
         // }
 
-      }
-    })
-  }
-
-  self.delete = function() {
-    return $.ajax({
-      url: self.URL.delete,
-      type: 'POST',
-      data: {
-        'roastProfileID': self.id,
       },
-      dataType: 'json',
-      success: function(response) {
+      error: function(jqXHR, textStatus, errorThrown ) {
 
-        // response = {
-        //     'deletedRoastProfileID': roastProfileID
-        // }
+        console.log(textStatus + ' ' + errorThrown)
 
       }
     })
   }
 
   self.getGraphData = function() {
+
+    self._validateCRUD('getGraphData')
     
     return $.ajax({
       url: self.URL.getRoastProfileGraphData,
@@ -75,10 +68,27 @@ function roastProfileModel(options) {
         //     'graphData': roastprofile.get_temp_graph_data()
         // }
 
+      },
+      error: function(jqXHR, textStatus, errorThrown ) {
+
+        console.log(textStatus + ' ' + errorThrown)
+
       }
     })
 
   }
 
-  return self
+  var parent_validateCreate = self._validateCreate
+  self._validateCreate = function() {
+    // We want our own custom validator, but also want to call the BaseAjaxModel's validator
+
+    // RoastProfiles must be created as a child of a coffee.
+    if (typeof(self.coffeeID) === 'undefined') {
+      throw self.validationError('create', 'Attempted to run with no coffeeID attribute set.')
+    }
+
+    // Run parent validator
+    parent_validateCreate.apply(self)
+  }
+
 }

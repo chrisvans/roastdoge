@@ -15,7 +15,7 @@ function lineChartVisualization(options) {
     self.margin = options.margin;
     self.width = options.width;
     self.height = options.height;
-    self.xAxisLabel = options.xAxisLabel || 'Time in Minutes';
+    self.xAxisLabel = options.xAxisLabel || 'Time in Seconds';
     self.yAxisLabel = options.yAxisLabel || 'Temperature';
     self.nvchart = '';
     self.tempMeasurement = options.tempMeasurement || 'C';  

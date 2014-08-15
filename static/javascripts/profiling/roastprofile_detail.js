@@ -103,7 +103,7 @@ var pointClickCallback = function(visualization) {
       URL: URL.tempPoint,
       visualization: visualization,
     }
-    var tempPoint = tempPointModel(pointOptions);
+    var tempPoint = new TempPointModel(pointOptions);
     var ajaxCallCommentCreateForm = tempPoint.commentCreateForm();
     var callback = function(response) {
 
@@ -148,19 +148,19 @@ lineChartVis.createChart([pointClickCallback]);
 
 var setRoastProfileGraphData = function(roastProfileID, callback) {
 
-  var roastProfile = roastProfileModel({
+  var roastProfile = new RoastProfile({
     'id': roastProfileID,
     'URL': URL.roastProfile,
   })
 
-  var ajaxCall = roastProfile.getGraphData();
-  ajaxCall.done(callback)
+  return roastProfile.getGraphData().done(callback);
 
 }
 
 var updateChartGraphData = function(roastProfileID) {
 
-    var callback = function(response) {
+  return setRoastProfileGraphData(roastProfileID)
+    .done(function(response) {
       var graphData = response.graphData;
       var seriesCount = Object.keys(lineChartVis.seriesMap).length
       
@@ -174,8 +174,7 @@ var updateChartGraphData = function(roastProfileID) {
       }
 
       lineChartVis.updateChart();
-    }
-    setRoastProfileGraphData(roastProfileID, callback)
+    })
 
 }
 // Setup handler for roastprofile select form change, and loading data into chart.
@@ -195,8 +194,9 @@ $("#listen-newprofile").click(function() {
     $(this).data("listening", true)
     $(this).val("Recording...  Click to stop recording.")
 
-    var roastProfile = roastProfileModel({
+    var roastProfile = new RoastProfile({
       'URL': URL.roastProfile,
+      'coffeeID': thisCoffeeID
     })
 
     var callback = function(response) {

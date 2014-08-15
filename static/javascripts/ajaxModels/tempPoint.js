@@ -1,22 +1,26 @@
-function tempPointModel(options) {
-  var self = {}
-  // Initialize own attributes based off of the object passed into the creation function
+// Depends on setupAjax.js, baseAjaxModel.js, jQuery
 
+function TempPointModel(options) {
   // This model is intended to control the CRUD interactions between the tempPoint model and it's child
-  // relation, pointComments.
+  // relation, pointComment
+  var self = this;
 
-  // Each ajax method returns itself, and it is expected that you should use the returned object's '.done', '.fail', and '.always'
-  // methods to control what happens in regard to responses and changes to the HTML structure.
-  self.__init__ = function(options) {
-      self.roastProfileID = options.roastProfileID
-      self.id = options.id
-      self.URL = options.URL
-      self.visualization = options.visualization
-  }
+  // Inherit from BaseAjaxModel
+  BaseAjaxModel.apply(this, arguments)
 
-  self.__init__(options)
+  options = (typeof(options) === 'undefined') ? {} : options
 
+  // Initialize own attributes based off of the object passed into the creation function
+  self.modelName = 'TempPoint'
+  self.roastProfileID = self.setAttrOrNull(options.roastProfileID)
+  self.visualization = self.setAttrOrNull(options.visualization)
+
+  // TODO: Some way to signify that this function is not an ajax call, and modifies only the DOM
   self.createPointIcon = function() {
+
+    // if (self.visualization === null) {
+    //   throw self.
+    // }
 
     // Find the index of the roastprofile line in visualization.data, based off of it's id
     // seriesMap must be updated every time a new line is added, so this model knows which 
@@ -74,13 +78,18 @@ function tempPointModel(options) {
       url: self.URL.commentCreate,
       type: 'POST',
       data: {
-        'tempPointID': self.id,
+        'TempPointID': self.id,
         'comment': comment,
       },
       dataType: 'json',
       success: function(response) {
 
         // response = {}
+
+      },
+      error: function(jqXHR, textStatus, errorThrown ) {
+
+        console.log(textStatus + ' ' + errorThrown)
 
       }
     })
@@ -93,7 +102,7 @@ function tempPointModel(options) {
       url: self.URL.commentDelete,
       type: 'POST',
       data: {
-        'tempPointID': self.id,
+        'TempPointID': self.id,
         'commentID': commentID,
       },
       dataType: 'json',
@@ -103,6 +112,11 @@ function tempPointModel(options) {
         //     'deletedCommentID': commentID,
         //     'hasComments': Boolean,
         // }
+
+      },
+      error: function(jqXHR, textStatus, errorThrown ) {
+
+        console.log(textStatus + ' ' + errorThrown)
 
       }
     })
@@ -114,7 +128,7 @@ function tempPointModel(options) {
       url: self.URL.commentCreateForm,
       type: 'GET',
       data: { 
-        'tempPointID': self.id,
+        'TempPointID': self.id,
       },
       dataType: 'json',
       statusCode: {
@@ -131,7 +145,7 @@ function tempPointModel(options) {
       },
       error: function(jqXHR, textStatus, errorThrown ) {
 
-        // log the error
+        console.log(textStatus + ' ' + errorThrown)
 
       }
     });
