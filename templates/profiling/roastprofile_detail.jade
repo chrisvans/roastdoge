@@ -4,8 +4,7 @@
 {% block title%}Profile Detail{% endblock title %} RoastDoge
 
 {% block css %}
-link(href='{% static "javascripts/d3_visualization/css/nv.d3.css" %}', rel='stylesheet', type='text/css')
-link(href='{% static "javascripts/d3_visualization/css/d3_vis.css" %}', rel='stylesheet', type='text/css', media='screen')
+link(href='{% static "javascripts/charts/css/nv.d3.css" %}', rel='stylesheet', type='text/css')
 link(href='{% static "css/roastprofile_detail.css" %}', rel='stylesheet', type='text/css', media='screen')
 {% endblock css %}
 
@@ -36,15 +35,15 @@ div#comments
 
 {% block javascripts %}
 
-script(src='{% static "javascripts/d3_visualization/d3.v2.min.js" %}')
-script(src='{% static "javascripts/d3_visualization/nv.d3.min.js" %}')
-script(src='{% static "javascripts/d3_visualization/tooltip.js" %}')
-script(src='{% static "javascripts/d3_visualization/utils.js" %}')
-script(src='{% static "javascripts/d3_visualization/legend.js" %}')
-script(src='{% static "javascripts/d3_visualization/axis.js" %}')
-script(src="{% static 'javascripts/d3_visualization/line_chart/line.js' %}")
-script(src="{% static 'javascripts/d3_visualization/line_chart/lineChart.js' %}")
-script(src="{% static 'javascripts/d3_visualization/line_chart/lineChartModel.js' %}")
+script(src='{% static "javascripts/charts/d3.v3.js" %}')
+script(src='{% static "javascripts/charts/nv.d3.js" %}')
+script(src='{% static "javascripts/charts/lineChart/tooltip.js" %}')
+script(src='{% static "javascripts/charts/lineChart/utils.js" %}')
+script(src='{% static "javascripts/charts/lineChart/legend.js" %}')
+script(src='{% static "javascripts/charts/lineChart/axis.js" %}')
+script(src="{% static 'javascripts/charts/lineChart/line.js' %}")
+script(src="{% static 'javascripts/charts/lineChart/lineChart.js' %}")
+script(src="{% static 'javascripts/charts/lineChart/lineChartModel.js' %}")
 script(src="{% static 'javascripts/ajaxModels/setupAjax.js' %}")
 script(src="{% static 'javascripts/ajaxModels/baseAjaxModel.js' %}")
 script(src="{% static 'javascripts/ajaxModels/tempPoint.js' %}")

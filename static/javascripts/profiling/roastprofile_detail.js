@@ -30,23 +30,27 @@ var pointIconCallback = function(visualization) {
         // Grab the value that should match the circle we're iterating over, since the circles are in the same order as the data[x].values array
 
         if (d[dataIndex].values[i].hasComments) { 
-          var thisCircle = d3.select(this)
 
-          var parentG = d3.select(thisCircle.node().parentNode)
+          if (d3.select('.svg-comment-icon.temppoint_' + d[dataIndex].values[i].id).empty()) {
 
-          // Append the icon as an svg image to the parent g element, and set it to be near the point
-          var iconSize = 16;
-          parentG
-            .append("image")
-              .attr("xlink:href", URL.tempPoint.commentIcon)
-              .attr("x", thisCircle.attr('cx'))
-              .attr("y", (parseInt(thisCircle.attr('cy')) - iconSize).toString())
-              .attr("width", iconSize)
-              .attr("height", iconSize)
-              // Give it a unique id that matched the temppoint's ID, so we can dynamically select it later
-              // Used for when a temppoint has all of it's comments deleted, and needs to tell this node
-              // to remove this comment icon.
-              .attr("class", "svg-comment-icon temppoint_" + d[dataIndex].values[i].id);
+            var thisCircle = d3.select(this)
+
+            var parentG = d3.select(thisCircle.node().parentNode)
+
+            // Append the icon as an svg image to the parent g element, and set it to be near the point
+            var iconSize = 16;
+            parentG
+              .append("image")
+                .attr("xlink:href", URL.tempPoint.commentIcon)
+                .attr("x", thisCircle.attr('cx'))
+                .attr("y", (parseInt(thisCircle.attr('cy')) - iconSize).toString())
+                .attr("width", iconSize)
+                .attr("height", iconSize)
+                // Give it a unique id that matched the temppoint's ID, so we can dynamically select it later
+                // Used for when a temppoint has all of it's comments deleted, and needs to tell this node
+                // to remove this comment icon.
+                .attr("class", "svg-comment-icon temppoint_" + d[dataIndex].values[i].id);
+          }
         } 
       })
     }
@@ -128,6 +132,10 @@ var pointClickCallback = function(visualization) {
 
           if (!response.hasComments) {
             d3.select('.svg-comment-icon.temppoint_' + tempPoint.id).remove()
+
+            var data = $.grep(visualization.data, function(e){ return e.id == element.series.id; });
+            var value = $.grep(data[0].values, function(e) { return e.id == tempPoint.id ; });
+            value[0].hasComments = false;
           }
         })
       })
