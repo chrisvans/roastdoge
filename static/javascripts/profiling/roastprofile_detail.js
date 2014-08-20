@@ -22,16 +22,16 @@ var pointIconCallback = function(visualization) {
 
       // Associate the data with each circle
       // TODO: Instead of attaching the whole data array to each circle, attach each corresponding value ( from data[x].values ) to the circle
-      d3.selectAll(selectString).datum(visualization.data);
+      d3.selectAll(selectString).datum(visualization.data[dataIndex].values);
 
       // Iterate over each circle, that now has the associated data
       d3.selectAll(selectString).each(function(d, i) { 
 
         // Grab the value that should match the circle we're iterating over, since the circles are in the same order as the data[x].values array
 
-        if (d[dataIndex].values[i].hasComments) { 
+        if (d[i].hasComments) { 
 
-          if (d3.select('.svg-comment-icon.temppoint_' + d[dataIndex].values[i].id).empty()) {
+          if (d3.select('.svg-comment-icon.temppoint_' + d[i].id).empty()) {
 
             var thisCircle = d3.select(this)
 
@@ -49,7 +49,7 @@ var pointIconCallback = function(visualization) {
                 // Give it a unique id that matched the temppoint's ID, so we can dynamically select it later
                 // Used for when a temppoint has all of it's comments deleted, and needs to tell this node
                 // to remove this comment icon.
-                .attr("class", "svg-comment-icon temppoint_" + d[dataIndex].values[i].id);
+                .attr("class", "svg-comment-icon temppoint_" + d[i].id);
           }
         } 
       })
