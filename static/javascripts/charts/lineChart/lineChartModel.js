@@ -77,7 +77,14 @@ function lineChartVisualization(options) {
       self.nvchart.yAxis
         .axisLabel(self.yAxisLabel)
         .tickFormat( function(d) {
-          formatted_tick = d3.format(',.1f')(d);
+          if (self.tempMeasurement == 'F') {
+            function c2f(value) {
+              return value * 1.8 + 32;
+            }
+            var formatted_tick = d3.format(',.1f')(c2f(d));
+          } else {
+            var formatted_tick = d3.format(',.1f')(d);
+          }
           return formatted_tick + ' ' + self.tempMeasurement;
         });
 
@@ -143,9 +150,16 @@ function lineChartVisualization(options) {
       .scale(self.xScale);
 
     self.nvchart.yAxis
-      .axisLabel(self.xAxisLabel)
+      .axisLabel(self.yAxisLabel)
       .tickFormat( function(d) {
-        formatted_tick = d3.format(',.1f')(d);
+        if (self.tempMeasurement == 'F') {
+          function c2f(value) {
+            return value * 1.8 + 32;
+          }
+          var formatted_tick = d3.format(',.1f')(c2f(d));
+        } else {
+          var formatted_tick = d3.format(',.1f')(d);
+        }
         return formatted_tick + ' ' + self.tempMeasurement;
       });
 
