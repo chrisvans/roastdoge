@@ -113,10 +113,13 @@ class RoastProfile(models.Model):
 
 
 class TempPoint(models.Model):
+    # Default temp measurement is in C
     temperature = models.CharField(max_length=255, null=False, default=u'212.0')
+    # Time is in seconds, relative to the start of the roast
     time = models.PositiveIntegerField()
     roast_profile = models.ForeignKey(RoastProfile, null=False)
 
+    # TODO: Save this as a field on .save(), rather than processing on every str/uni eval.
     def __unicode__(self):
         if self.roast_profile.coffee:
             return u'%s - %s - %s - %s' % (

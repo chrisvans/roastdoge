@@ -43,7 +43,7 @@ function lineChartVisualization(options) {
   // Known issue: Chart does not scale based on visible lines, but on all lines regardless.
   self.setLinesVisibility = function() {
     for (var i=0; i<self.data.length; i++) {
-      lineG = d3.select(self.selectElement + ' svg g g g.nv-linesWrap g.nvd3.nv-wrap.nv-line g g.nv-groups > g.nv-group.nv-series-' + i)
+      var lineG = d3.select(self.selectElement + ' svg g g g.nv-linesWrap g.nvd3.nv-wrap.nv-line g g.nv-groups > g.nv-group.nv-series-' + i)
       if (self.data[i].hidden) {
         lineG.style('visibility', 'hidden')
       } else {
