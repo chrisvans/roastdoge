@@ -78,6 +78,36 @@ function RoastProfile(options) {
 
   }
 
+  self.getGraphDataSlice = function(sliceStart) {
+
+    self._validateCRUD('getGraphDataSlice')
+
+    return $.ajax({
+      url: self.URL.getRoastProfileGraphDataSlice,
+      type: 'GET',
+      data: {
+        'roastProfileID': self.id,
+        'sliceStart': sliceStart,
+      },
+      dataType: 'json',
+      success: function(response) {
+
+        // self.graphData.values.push(response.graphDataValues)
+
+        // response = {
+        //   'graphDataValues': roastprofile.get_temp_graph_data_slice(sliceStart)
+        // }
+        
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+
+        console.log(textStatus + ' ' + errorThrown)
+
+      }
+    })
+
+  }
+
   var parent_validateCreate = self._validateCreate
   self._validateCreate = function() {
     // We want our own custom validator, but also want to call the BaseAjaxModel's validator

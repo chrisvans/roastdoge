@@ -1,5 +1,8 @@
 // Callback called after line chart creation and update.  Responsible for creating/updating svg icons representing whether or not
 // a point has comments on it.
+
+var __currentTime
+
 // TODO: This should be part of one of the models.
 
 var pointIconPreCall = function(visualization) {
@@ -87,8 +90,8 @@ lineOptions = {
   'width': width, 
   'height': height,
   // Any functions put into this list will be called on createChart and updateChart.
-  'storedCallbacks': [pointIconCallback],
-  'preUpdateCalls': [pointIconPreCall],
+  'storedCallbacks': [pointIconPreCall, pointIconCallback],
+  'preUpdateCalls': [],
   'seriesMap': seriesMap,
 }
 
@@ -185,6 +188,33 @@ var updateChartGraphData = function(roastProfileID) {
     })
 
 }
+
+var updateChartGraphDataSlice = function(roastProfileID) {
+
+  var roastProfile = new RoastProfile({
+    'id': roastProfileID,
+    'URL': URL.roastProfile,
+  })
+
+  if (!__currentTime) {
+    // TODO: This really shouldn't be global
+    __currentTime = 0;
+  }
+  roastProfile.getGraphDataSlice(__currentTime)
+    .done(function(response) {
+      var graphDataValues = response.graphDataValues;
+      __currentTime = response.lastSlice+1;
+      var values = lineChartVis.data[lineChartVis.seriesMap[roastProfileID]].values
+      
+      for (var i=0; i<graphDataValues.length; i++) {
+        values.push(graphDataValues[i])
+      }
+  })
+
+  lineChartVis.updateChart();
+
+}
+
 // Setup handler for roastprofile select form change, and loading data into chart.
 $("#id_roastprofile_select").change(function() {
 
@@ -209,9 +239,10 @@ $("#listen-newprofile").click(function() {
 
     var callback = function(response) {
       var updateChart = function() {
-        updateChartGraphData(roastProfile.id)
+        updateChartGraphDataSlice(roastProfile.id)
       }
 
+      updateChartGraphData(roastProfile.id)
       listenUpdatesID = setInterval(updateChart, 5000);
       
       // REPLACE ME - URL to send to RoastTron, so it knows where to send data to

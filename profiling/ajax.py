@@ -83,3 +83,23 @@ def roastprofile_graph_data(request):
     }
 
     return JsonResponse(data)
+
+def roastprofile_graph_data_slice(request):
+
+    roastprofile_id = request.GET.get('roastProfileID')
+    roastprofile = models.RoastProfile.objects.get(id=roastprofile_id)
+
+    slice_start = request.GET.get('sliceStart')
+
+    def get_lastslice_or_zero():
+        if roastprofile.temppoint_set.all().exists():
+            return roastprofile.temppoint_set.all().order_by('-time')[0].time
+        else:
+            return 0
+
+    data = {
+        'graphDataValues': roastprofile.get_temp_graph_data_slice(slice_start),
+        'lastSlice': get_lastslice_or_zero(),
+    }
+
+    return JsonResponse(data)

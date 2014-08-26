@@ -57,6 +57,45 @@ class RoastProfile(models.Model):
 
         return simplejson.dumps(data)
 
+    def get_temp_graph_data_slice(self, start=False, end=False, get_comments=False):
+        """
+        Grabs a slice of temp points based on a start and end time.  Intended to be used
+        when live updating a chart, to only grab the newest points.  If used otherwise,
+        then pass get_comments in as True, otherwise hasComments will always return False.
+        """
+        temp_point_qs = self.temppoint_set.all().order_by('time')
+        
+        if start:
+            temp_point_qs = temp_point_qs.filter(time__gte=start)
+        if end:
+            temp_point_qs = temp_point_qs.filter(time__lte=end)
+
+        values_list = []
+
+        if get_comments:
+            for temp_point in temp_point_qs:
+                values_list.append(
+                    {
+                    'x': temp_point.time,
+                    'y': float(temp_point.temperature),
+                    'id': temp_point.id,
+                    'hasComments': False,
+                    }
+                )
+        else:
+            temp_point_qs = temp_point_qs.prefetch_related('pointcomment_set')
+            for temp_point in temp_point_qs:
+                values_list.append(
+                    {
+                    'x': temp_point.time,
+                    'y': float(temp_point.temperature),
+                    'id': temp_point.id,
+                    'hasComments': temp_point.pointcomment_set.all().exists(),
+                    }
+                )            
+
+        return values_list
+
     def get_pointcomment_count(self):
         # TODO: Make this more efficient
         count = 0

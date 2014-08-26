@@ -32,6 +32,10 @@ urlpatterns = patterns('',
         ajax.roastprofile_graph_data,
         name='ajax-roastprofile-graph-data'
     ),
+    url(r'^roastprofile/temppoint/get-graph-data-slice/$',
+        ajax.roastprofile_graph_data_slice,
+        name='ajax-roastprofile-graph-data-slice'
+    ),
     url(r'^roastprofile/create/$',
         ajax.roastprofile_create,
         name='ajax-roastprofile-create'
