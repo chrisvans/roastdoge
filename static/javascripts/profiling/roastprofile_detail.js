@@ -2,6 +2,7 @@
 // a point has comments on it.
 
 var __currentTime
+var ROASTTRON_URL
 
 // TODO: This should be part of one of the models.
 
@@ -270,3 +271,11 @@ $("#listen-newprofile").click(function() {
     })
   }
 })
+
+// Ensure that the device stops recording when someone navigates away from the page
+
+window.onbeforeunload = function() {
+  if (ROASTTRON_URL) {
+    $.post(ROASTTRON_URL + '?record=0', {})
+  }
+}

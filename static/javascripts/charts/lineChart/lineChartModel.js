@@ -182,6 +182,7 @@ function lineChartVisualization(options) {
 
     self.setLinesVisibility()
 
+    // TODO: Set this up as an actual callback, rather than just doing it one second later
     setTimeout(self.callStoredCallbacks, 1000)
 
   }
