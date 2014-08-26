@@ -15,7 +15,7 @@ ul
   {% for profile in roastprofile_list %}
   li(id="id_roastprofile_{{profile.id}}")
     i.fa.fa-times.roastprofile-delete(id="{{profile.id}}", title="Delete Profile")
-    a(href="{% url 'roastprofile-detail' profile.id %}") {{ profile.name }} {% with count=profile.get_pointcomment_count %}{% if count != 0 %}: {{count}} comments. {% endif %}{% endwith %}
+    a(href="{% url 'roastprofile-detail' profile.id %}") {{ profile.name }}
   {% endfor %}
 
 {% endblock content %}
