@@ -7,6 +7,8 @@ from django.views import generic
 # Ours
 import models
 import forms
+from object_utils.views import ObjectDataMixin
+from profiling import models as profiling_models
 
 
 class GreenCoffeeCreate(generic.FormView):
@@ -45,7 +47,7 @@ class CoffeeCreate(generic.FormView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class CoffeeList(generic.ListView):
+class CoffeeList(generic.ListView, ObjectDataMixin):
     """
     Responsible for showing all of the relevant Coffees,
     and providing links to the list view of profiles associated with them.
@@ -55,19 +57,19 @@ class CoffeeList(generic.ListView):
     model = models.Coffee
 
 
-class CoffeeRoastProfileList(generic.ListView):
+class CoffeeRoastProfileList(generic.ListView, ObjectDataMixin):
     """
     Responsible for showing all of the relevant Roast Profiles, 
     and providing links to their detail view.
     """
 
     template_name = 'coffee/coffeeroastprofile_list.jade'
-    model = models.Coffee
+    model = profiling_models.RoastProfile
 
     def get_queryset(self):
 
         try:
-            queryset = self.model._default_manager.get(id=self.kwargs['coffee_id']).roastprofile_set.all()
+            queryset = self.model._default_manager.filter(coffee__id=self.kwargs['coffee_id'])
         except ObjectDoesNotExist:
             raise Http404
 

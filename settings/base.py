@@ -38,6 +38,7 @@ DJANGO_APPS = (
 APPS = (
     'coffee',
     'profiling',
+    'object_utils',
 )
 
 THIRD_PARTY_APPS = (

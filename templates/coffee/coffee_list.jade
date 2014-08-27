@@ -1,6 +1,10 @@
 {% extends 'base.jade' %}
 {% load staticfiles %}
 
+{% block css %}
+link(href='{% static "css/object/object_list.css" %}', rel='stylesheet', type='text/css', media='screen')
+{% endblock css %}
+
 {% block content %}
 
 h3 List of Coffees
@@ -12,16 +16,21 @@ h3
 
 ul
   {% for coffee in coffee_list %}
-  li(id="id_coffee_{{coffee.id}}")
-    i.fa.fa-times.coffee-delete(id="{{coffee.id}}", title="Delete Coffee")
+  li(id="id_object_{{coffee.id}}")
+    i.fa.fa-times.object-delete(id="{{coffee.id}}", title="Delete Coffee")
     a(href="{% url 'coffeeroastprofile-list' coffee.id %}") {{ coffee }}
   {% endfor %}
 
 {% endblock content %}
 
 {% block javascripts %}
-script(src="{% static 'javascripts/ajaxModels/setupAjax.js' %}")
-script(src='{% static "javascripts/coffee/coffee_list.js" %}')
+// TODO: This script should be an include. with object=object?
 script
-  var coffeeDeleteURL = '{% url "ajax-coffee-delete" %}'
+  var objectInfo = {
+    'name': "{{ objectClassName }}",
+    'module': "{{ objectClassModule }}",
+    'deleteURL': "{% url 'ajax-object-delete' %}",
+  }
+script(src="{% static 'javascripts/ajaxModels/setupAjax.js' %}")
+script(src="{% static 'javascripts/object/object_list.js' %}")
 {% endblock javascripts %}

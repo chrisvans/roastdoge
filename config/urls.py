@@ -11,6 +11,11 @@ urlpatterns = patterns(
     url(r'^coffee/', include('coffee.urls')),
 )
 
+urlpatterns += patterns(
+    '',
+    url(r'^object/delete', 'object_utils.ajax.object_delete', name='ajax-object-delete')
+)
+
 if settings.DEBUG:
     urlpatterns += patterns(
         'jstests.views',

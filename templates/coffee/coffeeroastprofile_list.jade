@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block css %}
-link(href='{% static "css/coffeeroastprofile_list.css" %}', rel='stylesheet', type='text/css', media='screen')
+link(href='{% static "css/object/object_list.css" %}', rel='stylesheet', type='text/css', media='screen')
 {% endblock css %}
 
 {% block content %}
@@ -13,23 +13,24 @@ h4
 
 ul
   {% for profile in roastprofile_list %}
-  li(id="id_roastprofile_{{profile.id}}")
-    i.fa.fa-times.roastprofile-delete(id="{{profile.id}}", title="Delete Profile")
+  li(id="id_object_{{profile.id}}")
+    i.fa.fa-times.object-delete(id="{{profile.id}}", title="Delete Profile")
     a(href="{% url 'roastprofile-detail' profile.id %}") {{ profile.name }}
   {% endfor %}
 
 {% endblock content %}
 
 {% block javascripts %}
+// TODO: This script should be an include. with object=object?
 script
-  var crudURL = {
-    'roastProfile': {
-      'delete': "{% url 'ajax-roastprofile-delete' %}"
-    }
+  var objectInfo = {
+    'name': "{{ objectClassName }}",
+    'module': "{{ objectClassModule }}",
+    'deleteURL': "{% url 'ajax-object-delete' %}",
   }
 script(src="{% static 'javascripts/ajaxModels/setupAjax.js' %}")
 script(src="{% static 'javascripts/ajaxModels/baseAjaxModel.js' %}")
 script(src="{% static 'javascripts/ajaxModels/tempPoint.js' %}")
 script(src="{% static 'javascripts/ajaxModels/roastProfile.js' %}")
-script(src="{% static 'javascripts/coffee/coffeeroastprofile_list.js' %}")
+script(src="{% static 'javascripts/object/object_list.js' %}")
 {% endblock javascripts %}
