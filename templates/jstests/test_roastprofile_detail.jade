@@ -1,0 +1,17 @@
+{% extends 'profiling/roastprofile_detail.jade' %}
+
+{% block javascripts %}
+{{ block.super }}
+script
+  function tearDown() {
+    // TODO: Delete the parent coffee too...
+    var roastprofile = new RoastProfile();
+    crudURL.roastProfile.delete = "{% url 'ajax-roastprofile-delete' %}";
+    roastprofile.crudURL = crudURL.roastProfile;
+    roastprofile.id = {{object.id}};
+    roastprofile.delete()
+  }
+  $(document).ready( function() {
+    tearDown();
+  })
+{% endblock %}

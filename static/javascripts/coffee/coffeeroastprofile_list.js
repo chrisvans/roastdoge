@@ -6,7 +6,7 @@ $('.roastprofile-delete').click(function() {
     var roastProfileID = $(this).attr("id")
     var roastProfile = new RoastProfile({
         'id': roastProfileID,
-        'URL': URL.roastProfile
+        'crudURL': crudURL.roastProfile
     })
     roastProfile.delete()
       .done(function (response){

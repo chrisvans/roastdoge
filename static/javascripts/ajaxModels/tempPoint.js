@@ -57,7 +57,7 @@ function TempPointModel(options) {
             var iconSize = 16;
             parentG
               .append("image")
-                .attr("xlink:href", self.URL.commentIcon)
+                .attr("xlink:href", self.crudURL.commentIcon)
                 .attr("x", thisCircle.attr('cx'))
                 .attr("y", (parseInt(thisCircle.attr('cy')) - iconSize).toString())
                 .attr("width", iconSize)
@@ -75,7 +75,7 @@ function TempPointModel(options) {
     var comment = $(inputElementSelector).val();
 
     return $.ajax({
-      url: self.URL.commentCreate,
+      url: self.crudURL.commentCreate,
       type: 'POST',
       data: {
         'TempPointID': self.id,
@@ -99,7 +99,7 @@ function TempPointModel(options) {
   self.commentDelete = function(commentID) {
     
     return $.ajax({
-      url: self.URL.commentDelete,
+      url: self.crudURL.commentDelete,
       type: 'POST',
       data: {
         'TempPointID': self.id,
@@ -125,7 +125,7 @@ function TempPointModel(options) {
   // Instantiates a new comment form, and displays all previous comments.
   self.commentCreateForm = function() {
     return $.ajax({
-      url: self.URL.commentCreateForm,
+      url: self.crudURL.commentCreateForm,
       type: 'GET',
       data: { 
         'TempPointID': self.id,

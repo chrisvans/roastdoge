@@ -12,8 +12,16 @@ h3
 
 ul
   {% for coffee in coffee_list %}
-  li
+  li(id="id_coffee_{{coffee.id}}")
+    i.fa.fa-times.coffee-delete(id="{{coffee.id}}", title="Delete Coffee")
     a(href="{% url 'coffeeroastprofile-list' coffee.id %}") {{ coffee }}
   {% endfor %}
 
 {% endblock content %}
+
+{% block javascripts %}
+script(src="{% static 'javascripts/ajaxModels/setupAjax.js' %}")
+script(src='{% static "javascripts/coffee/coffee_list.js" %}')
+script
+  var coffeeDeleteURL = '{% url "ajax-coffee-delete" %}'
+{% endblock javascripts %}

@@ -55,7 +55,7 @@ script
   var thisRoastProfileID = {{ roastprofile.id }}
   var csrf_token = "{% csrf_token %}"
 
-  var URL = {
+  var crudURL = {
     'roastProfile': {
       'create': "{% url 'ajax-roastprofile-create' %}",
       'getRoastProfileGraphData': "{% url 'ajax-roastprofile-graph-data' %}",

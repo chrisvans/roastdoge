@@ -34,7 +34,7 @@ function BaseAjaxModel(options) {
   // 'read':url, # Not Implemented
   // 'update':url # Not Implemented
   // }
-  self.URL = self.setAttrOrNull(options.URL)
+  self.crudURL = self.setAttrOrNull(options.crudURL)
 
   // AJAX METHODS
 
@@ -48,7 +48,7 @@ function BaseAjaxModel(options) {
     self._validateCreate()
 
     return $.ajax({
-      url: self.URL.create,
+      url: self.crudURL.create,
       type: 'POST',
       data: {
       },
@@ -75,7 +75,7 @@ function BaseAjaxModel(options) {
     data[self.modelName + 'ID'] = self.id
 
     return $.ajax({
-      url: self.URL.delete,
+      url: self.crudURL.delete,
       type: 'POST',
       data: data,
       dataType: 'json',
@@ -105,9 +105,9 @@ function BaseAjaxModel(options) {
 
     // CRUD Validators
 
-    // All CRUD Methods require that a URL be set.
-    if (self.URL === null) {
-      throw self.validationError(methodString, 'Method was attempted with no URL attribute set.')
+    // All CRUD Methods require that a crudURL be set.
+    if (self.crudURL === null) {
+      throw self.validationError(methodString, 'Method was attempted with no crudURL attribute set.')
     }
 
     if ((methodString !== 'create') && (self.id === null)) {
@@ -121,8 +121,8 @@ function BaseAjaxModel(options) {
 
     self._validateCRUD('create')
 
-    if (typeof(self.URL.create) === 'undefined') {
-      throw self.validationError('create', 'Method was attempted with no URL.create attribute set.')
+    if (typeof(self.crudURL.create) === 'undefined') {
+      throw self.validationError('create', 'Method was attempted with no crudURL.create attribute set.')
     }
   }
 
@@ -131,8 +131,8 @@ function BaseAjaxModel(options) {
 
     self._validateCRUD('delete')
 
-    if (typeof(self.URL.delete) === 'undefined') {
-      throw self.validationError('delete', 'Method was attempted with no URL.delete attribute set.')
+    if (typeof(self.crudURL.delete) === 'undefined') {
+      throw self.validationError('delete', 'Method was attempted with no crudURL.delete attribute set.')
     }
 
     if (typeof(self.id) === 'undefined') {

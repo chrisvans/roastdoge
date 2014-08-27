@@ -45,7 +45,7 @@ var pointIconCallback = function(visualization) {
             var iconSize = 16;
             parentG
               .append("image")
-                .attr("xlink:href", URL.tempPoint.commentIcon)
+                .attr("xlink:href", crudURL.tempPoint.commentIcon)
                 .attr("x", thisCircle.attr('cx'))
                 .attr("y", (parseInt(thisCircle.attr('cy')) - iconSize).toString())
                 .attr("width", iconSize)
@@ -108,7 +108,7 @@ var pointClickCallback = function(visualization) {
     var pointOptions = {
       roastProfileID: element.series.id,
       id: element.point.id,
-      URL: URL.tempPoint,
+      crudURL: crudURL.tempPoint,
       visualization: visualization,
     }
     var tempPoint = new TempPointModel(pointOptions);
@@ -162,7 +162,7 @@ var setRoastProfileGraphData = function(roastProfileID, callback) {
 
   var roastProfile = new RoastProfile({
     'id': roastProfileID,
-    'URL': URL.roastProfile,
+    'crudURL': crudURL.roastProfile,
   })
 
   return roastProfile.getGraphData().done(callback);
@@ -194,7 +194,7 @@ var updateChartGraphDataSlice = function(roastProfileID) {
 
   var roastProfile = new RoastProfile({
     'id': roastProfileID,
-    'URL': URL.roastProfile,
+    'crudURL': crudURL.roastProfile,
   })
 
   if (!__currentTime) {
@@ -234,7 +234,7 @@ $("#listen-newprofile").click(function() {
     $(this).val("Recording...  Click to stop recording.")
 
     var roastProfile = new RoastProfile({
-      'URL': URL.roastProfile,
+      'crudURL': crudURL.roastProfile,
       'coffeeID': thisCoffeeID
     })
 

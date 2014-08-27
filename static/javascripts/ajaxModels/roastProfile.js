@@ -25,7 +25,7 @@ function RoastProfile(options) {
     self._validateCreate()
 
     return $.ajax({
-      url: self.URL.create,
+      url: self.crudURL.create,
       type: 'POST',
       data: {
         'coffeeID': self.coffeeID,
@@ -54,7 +54,7 @@ function RoastProfile(options) {
     self._validateCRUD('getGraphData')
     
     return $.ajax({
-      url: self.URL.getRoastProfileGraphData,
+      url: self.crudURL.getRoastProfileGraphData,
       type: 'GET',
       data: {
         'roastProfileID': self.id,
@@ -83,7 +83,7 @@ function RoastProfile(options) {
     self._validateCRUD('getGraphDataSlice')
 
     return $.ajax({
-      url: self.URL.getRoastProfileGraphDataSlice,
+      url: self.crudURL.getRoastProfileGraphDataSlice,
       type: 'GET',
       data: {
         'roastProfileID': self.id,
