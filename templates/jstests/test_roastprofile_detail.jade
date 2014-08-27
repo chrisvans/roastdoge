@@ -1,7 +1,14 @@
 {% extends 'profiling/roastprofile_detail.jade' %}
+{% load staticfiles %}
+
+{% block css %}
+{{ block.super }}
+link(href="{% static 'css/qunit-1.15.0.css' %}", rel='stylesheet', type='text/css')
+{% endblock css %}
 
 {% block javascripts %}
 {{ block.super }}
+
 script
   function tearDown() {
     // TODO: Delete the parent coffee too...
@@ -14,4 +21,6 @@ script
   $(document).ready( function() {
     tearDown();
   })
-{% endblock %}
+script(src="{% static 'javascripts/qunit-1.15.0.js' %}")
+
+{% endblock javascripts %}
