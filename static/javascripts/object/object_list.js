@@ -19,7 +19,8 @@ $('.object-delete').click(function() {
       data: {
         'objectName': objectInfo.name,
         'objectModule': objectInfo.module, 
-        'objectID': objectID},
+        'objectID': objectID
+      },
       dataType: 'JSON',
     })
       .done(function (response){

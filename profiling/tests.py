@@ -121,6 +121,10 @@ class TestAjaxViews(TestCase):
         self.coffee.delete()
 
     def test_temppoint_comment_create_form(self):
+        """
+        Test that this view properly responds with a rendered form as JSON.
+        """
+
         some_temppoint = self.roastprofile.temppoint_set.all()[0]
         request = self.request_factory.get(
             reverse('ajax-temppoint-comment-create-form'), 
@@ -142,6 +146,10 @@ class TestAjaxViews(TestCase):
         self.assertEqual(response.content, expected_response.content)
 
     def test_temppoint_comment_create(self):
+        """
+        Test that this view properly creates a comment on the temppoint.
+        """
+
         some_temppoint = self.roastprofile.temppoint_set.all()[0]
         comment = 'I made a comment dood'
         request = self.request_factory.post(
@@ -160,6 +168,10 @@ class TestAjaxViews(TestCase):
         self.assertEqual(comment_queryset.count(), 1)
 
     def test_comment_delete(self):
+        """
+        Test that this view deletes a PointComment based on it's ID.
+        """
+
         some_temppoint = self.roastprofile.temppoint_set.all()[0]
         pointcomment = PointCommentFactory.create(point=some_temppoint, comment="Hay")
 
@@ -179,6 +191,11 @@ class TestAjaxViews(TestCase):
         self.assertEqual(PointComment.objects.filter(id=pointcomment.id).exists(), False)
 
     def test_roastprofile_create(self):
+        """
+        Test that this view creates a new RoastProfile with a Coffee as it's parent based 
+        on that Coffee's ID.
+        """
+
         request = self.request_factory.post(
             reverse('ajax-roastprofile-create'),
             {'coffeeID': self.coffee.id}
@@ -192,6 +209,10 @@ class TestAjaxViews(TestCase):
         self.assertEqual(self.coffee.roastprofile_set.all().count(), 2)
 
     def test_roastprofile_delete(self):
+        """
+        Test that this view delete's a RoastProfile based on it's ID.
+        """
+
         request = self.request_factory.post(
             reverse('ajax-roastprofile-delete'),
             {'RoastProfileID': self.roastprofile.id}
@@ -205,6 +226,11 @@ class TestAjaxViews(TestCase):
         self.assertEqual(self.coffee.roastprofile_set.all().exists(), False)
 
     def test_roastprofile_graph_data(self):
+        """
+        Test that this view properly returns a JSON response with 'graphData' that is 
+        a JSON encoded form of a RoastProfile's get_temp_graph_data method.
+        """
+
         request = self.request_factory.get(
             reverse('ajax-roastprofile-graph-data'),
             {'roastProfileID': self.roastprofile.id}
@@ -219,14 +245,25 @@ class TestAjaxViews(TestCase):
         )
 
     def test_roastprofile_graph_data_slice(self):
+        """
+        Test that this view properly returns a slice of a set of related TempPoints from a RoastProfile.
+        """
+
+        slice_start = '5'
         request = self.request_factory.get(
             reverse('ajax-roastprofile-graph-data-slice'),
             {
                 'roastProfileID': self.roastprofile.id,
-                'sliceStart': '5'
+                'sliceStart': slice_start
             }
         )
 
         response = ajax.roastprofile_graph_data_slice(request)
 
+        data = {
+            'graphDataValues': self.roastprofile.get_temp_graph_data_slice(slice_start),
+            'lastSlice': self.roastprofile.temppoint_set.all().order_by('-time')[0].time
+        }
+
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, JsonResponse(data).content)
