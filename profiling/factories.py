@@ -26,3 +26,12 @@ class TempPointFactory(factory.django.DjangoModelFactory):
     time = factory.Sequence(lambda n: '{0}'.format(n))
     temperature = factory.Sequence(lambda n: '{0}.2'.format(n+80))
     roast_profile = factory.SubFactory(RoastProfileFactory)
+
+
+class PointCommentFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = models.PointComment
+
+    point = factory.SubFactory(TempPointFactory)
+    comment = factory.Sequence(lambda n: "Some Comment {0}".format(n))

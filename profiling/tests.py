@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 
 # Ours
 from coffee.factories import CoffeeFactory
+from profiling.factories import PointCommentFactory
 from profiling.models import PointComment
 
 # Third Party
@@ -40,11 +41,12 @@ class TestRoastProfileDetail(StaticLiveServerCase):
             )
         )
  
+        # Wait for page to fully load // TODO: Find a better way...
         time.sleep(1)
 
         # Click on the (time=21) point on the chart, which should create a form
         self.selenium.find_element_by_class_name("nv-path-21").click()
-        time.sleep(1)
+        time.sleep(1)  # Wait for the form to be rendered
 
         # Find the form, if this fails, the form wasn't created.
         comment_form = self.selenium.find_element_by_id('id_comment')
@@ -59,4 +61,19 @@ class TestRoastProfileDetail(StaticLiveServerCase):
 
         comment = PointComment.objects.filter(comment='My Comment')
         assert comment.exists()
+
+    # def test_comment_form_delete(self):
+    #     self.selenium.get(
+    #         '%s%s' % (
+    #             self.live_server_url, 
+    #             reverse('roastprofile-detail', args=(self.roastprofile.id,))
+    #         )
+    #     )
+
+    #     firstpoint = self.roastprofile.temppoint_set.all().order_by('time')[0].id
+        
+    #     newcomment = PointCommentFactory.create(point=firstpoint)
+        
+        
+
 
