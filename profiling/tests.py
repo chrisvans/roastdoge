@@ -7,8 +7,8 @@ from django.test import TestCase, Client, RequestFactory
 
 # Ours
 from coffee.factories import CoffeeFactory
-from profiling.factories import PointCommentFactory
-from profiling.models import PointComment
+import factories
+import models
 import ajax
 import forms
 
@@ -20,17 +20,17 @@ from selenium.webdriver.support import ui
 import time
 
 
-class TestRoastProfileDetail(StaticLiveServerCase):
+class TestRoastProfileDetailFunctional(StaticLiveServerCase):
 
     @classmethod
     def setUpClass(cls):
         cls.selenium = WebDriver()
-        super(TestRoastProfileDetail, cls).setUpClass()
+        super(TestRoastProfileDetailFunctional, cls).setUpClass()
 
     @classmethod
     def tearDownClass(cls):
         cls.selenium.quit()
-        super(TestRoastProfileDetail, cls).tearDownClass()
+        super(TestRoastProfileDetailFunctional, cls).tearDownClass()
 
     def setUp(self):
         self.coffee = CoffeeFactory.create()
@@ -73,8 +73,10 @@ class TestRoastProfileDetail(StaticLiveServerCase):
         self.selenium.find_element_by_id('id_comment')
 
         
-        comment = PointComment.objects.filter(comment='My Comment')
+        comment = models.PointComment.objects.filter(comment='My Comment')
         self.assertEqual(comment.exists(), True)
+
+        # TODO: Test that the comment svg is properly created and placed on the chart.
 
     def test_comment_form_delete(self):
         """
@@ -91,7 +93,7 @@ class TestRoastProfileDetail(StaticLiveServerCase):
         # Grab the first point ( by time ) on a roast profile
         # and create a comment for it
         firstpoint = self.roastprofile.temppoint_set.all().order_by('time')[0]
-        newcomment = PointCommentFactory.create(point=firstpoint, comment="Le Commentzorz")
+        newcomment = factories.PointCommentFactory.create(point=firstpoint, comment="Le Commentzorz")
         time.sleep(1)
 
         # Click on the first point, assert that the comment we just created renders
@@ -105,7 +107,7 @@ class TestRoastProfileDetail(StaticLiveServerCase):
         ).click()
         time.sleep(1)
 
-        comment_query = PointComment.objects.filter(id=newcomment.id)
+        comment_query = models.PointComment.objects.filter(id=newcomment.id)
         self.assertEqual(comment_query.exists(), False)       
 
 
@@ -135,8 +137,8 @@ class TestAjaxViews(TestCase):
         data = render_to_string(
             '_includes/forms/point_comment_form.jade',
             {
-                'point':some_temppoint,
-                'form':forms.PointCommentForm(data={'point':some_temppoint.id}),
+                'point': some_temppoint,
+                'form': forms.PointCommentForm(data={'point':some_temppoint.id}),
                 'comments': some_temppoint.pointcomment_set.all().order_by('created')
             }
         )
@@ -163,7 +165,7 @@ class TestAjaxViews(TestCase):
         response = ajax.temppoint_comment_create(request)
 
         self.assertEqual(response.status_code, 200)
-        comment_queryset = PointComment.objects.filter(point__id=some_temppoint.id, comment=comment)
+        comment_queryset = models.PointComment.objects.filter(point__id=some_temppoint.id, comment=comment)
         self.assertEqual(comment_queryset.exists(), True)
         self.assertEqual(comment_queryset.count(), 1)
 
@@ -173,7 +175,7 @@ class TestAjaxViews(TestCase):
         """
 
         some_temppoint = self.roastprofile.temppoint_set.all()[0]
-        pointcomment = PointCommentFactory.create(point=some_temppoint, comment="Hay")
+        pointcomment = factories.PointCommentFactory.create(point=some_temppoint, comment="Hay")
 
         request = self.request_factory.post(
             reverse('ajax-comment-delete'),
@@ -183,12 +185,12 @@ class TestAjaxViews(TestCase):
             }
         )
 
-        self.assertEqual(PointComment.objects.filter(id=pointcomment.id).exists(), True)
+        self.assertEqual(models.PointComment.objects.filter(id=pointcomment.id).exists(), True)
 
         response = ajax.comment_delete(request)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(PointComment.objects.filter(id=pointcomment.id).exists(), False)
+        self.assertEqual(models.PointComment.objects.filter(id=pointcomment.id).exists(), False)
 
     def test_roastprofile_create(self):
         """
