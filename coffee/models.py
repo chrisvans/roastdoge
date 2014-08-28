@@ -54,8 +54,6 @@ class Coffee(models.Model):
 
         for i in range(60):
 
-            print temp
-
             templist = temp.split('.')
 
             temp = u'%s.%s' % (
@@ -76,7 +74,6 @@ class Coffee(models.Model):
         temp = start_temp
 
         for i in range(3):
-            print temp
 
             templist = temp.split('.')
 
@@ -105,8 +102,6 @@ class Coffee(models.Model):
             last_temp += (i+1)
 
         for i in range(1000):
-
-            print temp
 
             templist = temp.split('.')
 
