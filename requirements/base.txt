@@ -1,4 +1,4 @@
-https://www.djangoproject.com/download/1.7c2/tarball/
+Django==1.7
 argparse==1.2.1
 django-extensions==1.3.9
 psycopg2==2.5.3
