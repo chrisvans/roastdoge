@@ -1,5 +1,5 @@
 # Django
-from django.contrib.staticfiles.testing import StaticLiveServerCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -20,7 +20,7 @@ from selenium.webdriver.support import ui
 import time
 
 
-class TestRoastProfileDetailFunctional(StaticLiveServerCase):
+class TestRoastProfileDetailFunctional(StaticLiveServerTestCase):
 
     @classmethod
     def setUpClass(cls):
