@@ -8,6 +8,8 @@ def object_delete(request):
     Generic Ajax View for deleting an object.
 
     Required parameters:
+
+    POST
     objectID: A valid object.id
     objectName: The object model's name ex. 'RoastProfile'
     objectModule: The dotted path to the object's module ex. 'profiling.models' 
