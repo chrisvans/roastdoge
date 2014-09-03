@@ -11,7 +11,7 @@ class GreenCoffee(models.Model):
     region = models.CharField(max_length=255, null=True, blank=True)
     farm = models.CharField(max_length=255, null=True, blank=True)
     varietal = models.CharField(max_length=255, null=True, blank=True)
-    harvest_date = models.DateTimeField(default=datetime.datetime.utcnow())
+    harvest_date = models.DateTimeField(auto_now_add=True)
     description = models.TextField(null=True, blank=True)
 
     def __unicode__(self):

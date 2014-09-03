@@ -13,8 +13,9 @@ import random
 
 class RoastProfile(models.Model):
     name = models.CharField(max_length=255, null=False, blank=False)
-    date = models.DateTimeField(default=datetime.datetime.utcnow())
+    date = models.DateTimeField(auto_now_add=True)
     coffee = models.ForeignKey('coffee.Coffee', null=True, blank=False)
+    _graph_data_cache = models.TextField(null=True, blank=True)
 
     def get_roastprofile_select_form(self):
         from forms import RoastProfileSelectForm
@@ -53,9 +54,14 @@ class RoastProfile(models.Model):
     	and formats them into a suitable data structure for a d3 line chart, as JSON.
     	It is intended to be used on the template, to directly drop in data for a line chart.
     	"""
-        data = self.get_temp_graph_data()
 
-        return simplejson.dumps(data)
+        if not self._graph_data_cache:
+
+            data = self.get_temp_graph_data()
+            self._graph_data_cache = simplejson.dumps(data)
+            self.save()
+
+        return self._graph_data_cache
 
     def get_temp_graph_data_slice(self, start=False, end=False, get_comments=False):
         """
@@ -130,6 +136,15 @@ class TempPoint(models.Model):
             )
         else:
             return u'%s - %s - %s' % (self.roast_profile, unicode(self.time), self.temperature)
+
+    def save(self, *args, **kwargs):
+
+        # Remove the cached graph_data on the roastprofile when a new point is saved.
+        if self.id and self.roast_profile and self.roast_profile._graph_data_cache:
+            self.roast_profile._graph_data_cache = None
+            self.roast_profile.save()
+
+        super(TempPoint, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Temperature Point'

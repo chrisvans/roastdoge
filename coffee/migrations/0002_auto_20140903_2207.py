@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='greencoffee',
             name='harvest_date',
-            field=models.DateTimeField(default=datetime.datetime(2014, 9, 2, 22, 49, 5, 194496)),
+            field=models.DateTimeField(auto_now_add=True),
         ),
     ]

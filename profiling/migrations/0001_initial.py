@@ -10,7 +10,7 @@ import django_extensions.db.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('coffee', '0002_auto_20140902_2249'),
+        ('coffee', '0002_auto_20140903_2207'),
     ]
 
     operations = [
