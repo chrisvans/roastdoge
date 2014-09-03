@@ -13,7 +13,7 @@ import random
 
 class RoastProfile(models.Model):
     name = models.CharField(max_length=255, null=False, blank=False)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(default=datetime.datetime.now)
     coffee = models.ForeignKey('coffee.Coffee', null=True, blank=False)
     _graph_data_cache = models.TextField(null=True, blank=True)
 
