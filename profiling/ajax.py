@@ -6,6 +6,9 @@ from django.template.loader import render_to_string
 import models
 import forms
 
+# Third Party
+import simplejson
+
 
 def temppoint_comment_create_form(request):
 
@@ -59,7 +62,7 @@ def roastprofile_create(request):
 
     data = {
         'RoastProfileID': roastprofile.id,
-        'roastProfileGraphData': roastprofile.get_temp_graph_data(),
+        'roastProfileGraphData': simplejson.loads(roastprofile.get_temp_graph_data_JSON()),
     }
 
     return JsonResponse(data)
@@ -79,7 +82,7 @@ def roastprofile_graph_data(request):
     roastprofile = models.RoastProfile.objects.get(id=roastprofile_id)
 
     data = {
-        'graphData': roastprofile.get_temp_graph_data()
+        'graphData': simplejson.loads(roastprofile.get_temp_graph_data_JSON())
     }
 
     return JsonResponse(data)

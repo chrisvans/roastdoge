@@ -39,6 +39,7 @@ APPS = (
     'coffee',
     'profiling',
     'object_utils',
+    'rest_framework',
 )
 
 THIRD_PARTY_APPS = (
@@ -177,4 +178,11 @@ LOGGING = {
             'level': 'DEBUG',
         },
     }
+}
+
+######## DJANGO REST FRAMEWORK #########
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'PAGINATE_BY': 10
 }

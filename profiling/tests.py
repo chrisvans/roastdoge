@@ -243,7 +243,7 @@ class TestAjaxViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.content,
-            JsonResponse({'graphData':self.roastprofile.get_temp_graph_data()}).content
+            JsonResponse({'graphData':self.roastprofile._get_temp_graph_data()}).content
         )
 
     def test_roastprofile_graph_data_slice(self):

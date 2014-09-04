@@ -23,7 +23,7 @@ class RoastProfile(models.Model):
         form.fields['roastprofile_select'].queryset = form.fields['roastprofile_select'].queryset.exclude(id=self.id)
         return form
 
-    def get_temp_graph_data(self):
+    def _get_temp_graph_data(self):
         """
         This method grabs all of the associated TempPoints for this RoastProfile,
         and formats them into a suitable data structure for a d3 line chart.
@@ -57,7 +57,7 @@ class RoastProfile(models.Model):
 
         if not self._graph_data_cache:
 
-            data = self.get_temp_graph_data()
+            data = self._get_temp_graph_data()
             self._graph_data_cache = simplejson.dumps(data)
             self.save()
 
