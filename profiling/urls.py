@@ -4,9 +4,6 @@ from django.conf.urls import patterns, url, include
 # Ours
 import views, ajax
 
-# Third Party
-from rest_framework import routers
-
 
 urlpatterns = patterns('',
     url(r'^/?$', views.index, name='index'),
@@ -61,19 +58,5 @@ urlpatterns = patterns('',
         ajax.roastprofile_delete,
         name='ajax-roastprofile-delete'
     ),
-)
-
-
-# DJANGO REST FRAMEWORK
-
-router = routers.DefaultRouter()
-router.register(r'roastprofile', views.RoastProfileViewSet, base_name='rest-roastprofile')
-router.register(r'temppoint', views.TempPointViewSet, base_name='rest-temppoint')
-
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browseable API.
-urlpatterns += patterns('',
-    url(r'^api/', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
 

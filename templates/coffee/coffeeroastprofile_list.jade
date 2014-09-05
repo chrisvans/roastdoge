@@ -23,11 +23,8 @@ ul
 {% block javascripts %}
 // TODO: This script should be an include. with object=object?
 script
-  var objectInfo = {
-    'name': "{{ objectClassName }}",
-    'module': "{{ objectClassModule }}",
-    'deleteURL': "{% url 'ajax-object-delete' %}",
-  }
+  var objectListURL = "{% url 'rest-'|add:object_label|add:'-list' %}";
+
 script(src="{% static 'javascripts/ajaxModels/setupAjax.js' %}")
 script(src="{% static 'javascripts/ajaxModels/baseAjaxModel.js' %}")
 script(src="{% static 'javascripts/ajaxModels/tempPoint.js' %}")

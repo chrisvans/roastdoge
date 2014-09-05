@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.views.generic.base import ContextMixin
 
@@ -11,7 +12,6 @@ class ObjectDataMixin(ContextMixin):
 
     def get_context_data(self, **kwargs):
 
-        kwargs['objectClassName'] = self.model.__name__
-        kwargs['objectClassModule'] = self.model.__module__
+        kwargs['object_label'] = self.model.__name__.lower()
 
         return super(ObjectDataMixin, self).get_context_data(**kwargs)

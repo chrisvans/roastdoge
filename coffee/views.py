@@ -7,8 +7,20 @@ from django.views import generic
 # Ours
 import models
 import forms
+import serializers
 from object_utils.views import ObjectDataMixin
 from profiling import models as profiling_models
+
+# Third Party
+from rest_framework import viewsets
+
+
+class CoffeeViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows coffees to be viewed or edited.
+    """
+    queryset = models.Coffee.objects.all()
+    serializer_class = serializers.CoffeeSerializer
 
 
 class GreenCoffeeCreate(generic.FormView):

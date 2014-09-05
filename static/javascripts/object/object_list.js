@@ -9,18 +9,16 @@
 // The listing li's should be given an id attribute "id_object_{{object.id}}"
 
 $('.object-delete').click(function() {
-  var answer = confirm("Are you sure you want to delete this " + objectInfo.name + "?");
+  var answer = confirm("Are you sure you want to delete this?");
   if (answer) {
+
     var objectID = $(this).attr("id")
+    var deleteURL = objectListURL + objectID;
 
     $.ajax({
-      url: objectInfo.deleteURL,
-      type: 'POST',
-      data: {
-        'objectName': objectInfo.name,
-        'objectModule': objectInfo.module, 
-        'objectID': objectID
-      },
+      url: deleteURL,
+      type: 'DELETE',
+      data: {},
       dataType: 'JSON',
     })
       .done(function (response){
