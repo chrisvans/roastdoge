@@ -206,16 +206,18 @@ class TestAjaxViews(TestCase):
         on that Coffee's ID.
         """
 
-        request = self.request_factory.post(
-            reverse('ajax-roastprofile-create'),
-            {'coffeeID': self.coffee.id}
+        request = self.api_request_factory.post(
+            reverse('rest-roastprofile-list'),
+            {'coffee': self.coffee.id, 'name': 'Test Profile'}
         )
 
         self.assertEqual(self.coffee.roastprofile_set.all().count(), 1)
 
-        response = ajax.roastprofile_create(request)
+        view = views.RoastProfileViewSet.as_view(actions={'post':'create'})
 
-        self.assertEqual(response.status_code, 200)
+        response = view(request)
+
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(self.coffee.roastprofile_set.all().count(), 2)
 
     def test_roastprofile_delete(self):
@@ -268,20 +270,22 @@ class TestAjaxViews(TestCase):
         """
 
         slice_start = '5'
-        request = self.request_factory.get(
-            reverse('ajax-roastprofile-graph-data-slice'),
+        request = self.api_request_factory.get(
+            reverse('rest-roastprofile-get-graph-data-slice'),
             {
-                'roastProfileID': self.roastprofile.id,
+                'id': self.roastprofile.id,
                 'sliceStart': slice_start
             }
         )
 
-        response = ajax.roastprofile_graph_data_slice(request)
+        view = views.RoastProfileViewSet.as_view(actions={'get':'get_graph_data_slice'})
+        
+        response = view(request)
 
-        data = {
+        expected_data = {
             'graphDataValues': self.roastprofile.get_temp_graph_data_slice(slice_start),
             'lastSlice': self.roastprofile.temppoint_set.all().order_by('-time')[0].time
         }
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, JsonResponse(data).content)
+        self.assertEqual(response.content, JsonResponse(expected_data).content)
