@@ -14,6 +14,7 @@ import forms
 import views
 
 # Third Party
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import ui
 from rest_framework.test import APIRequestFactory
@@ -23,6 +24,10 @@ import time
 
 
 class TestRoastProfileDetailFunctional(StaticLiveServerTestCase):
+    """
+    Test that the front-end user interface for the roast profile detail view / charts 
+    works as expected.
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -110,10 +115,70 @@ class TestRoastProfileDetailFunctional(StaticLiveServerTestCase):
         time.sleep(1)
 
         comment_query = models.PointComment.objects.filter(id=newcomment.id)
-        self.assertEqual(comment_query.exists(), False)       
+        self.assertEqual(comment_query.exists(), False)
+
+    def test_record_newprofile(self):
+        """
+        Test that a user can record a new profile, and that the proper data is grabbed 
+        and rendered on the chart via polling.
+        """       
+
+        self.selenium.get(
+            '%s%s' % (
+                self.live_server_url, 
+                reverse('roastprofile-detail', args=(self.roastprofile.id,))
+            )
+        )
+
+        self.selenium.find_element_by_id("listen-newprofile").click()
+
+        waiting = True    
+        timeout = 10
+        count = 0
+        while waiting:
+            try: 
+                new_rp = models.RoastProfile.objects.exclude(id=self.roastprofile.id).get()
+                waiting = False
+            except models.RoastProfile.DoesNotExist as e:
+                if count > timeout:
+                    raise e
+                time.sleep(1)
+            count += 1
+        waiting = None
+
+        for i in range(30):
+            models.TempPoint.objects.create(
+                roast_profile=new_rp, 
+                time=str(i+1), 
+                temperature='%s.1' % (str(i*5))
+            )
+
+        # assert that all the points were rendered
+
+        # The script will take at least 5 seconds before it will grab the data and render it.
+        time.sleep(5)
+
+        waiting = True
+        timeout = 10
+        count = 0
+        while waiting:
+            try:
+                for point in new_rp.temppoint_set.all():
+                    self.selenium.find_element_by_css_selector(
+                        "g.nv-group.nv-series-1 .nv-point-%s" % str(int(point.time)-1))
+                waiting = False
+            except NoSuchElementException as e:
+                if count > timeout:
+                    raise e
+                time.sleep(1)
+            count += 1
+        waiting = None
 
 
 class TestAjaxViews(TestCase):
+    """
+    Test that every API route that will be called via JS AJAX will work as expected.
+    """
 
     def setUp(self):
         self.coffee = CoffeeFactory.create()
