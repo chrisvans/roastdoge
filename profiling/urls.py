@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, url, include 
 
 # Ours
-import views, ajax
+import views
 
 
 urlpatterns = patterns('',
