@@ -52,7 +52,7 @@ class Coffee(models.Model):
 
         temp = drop_temp
 
-        for i in range(60):
+        for i in range(1, 60):
 
             templist = temp.split('.')
 

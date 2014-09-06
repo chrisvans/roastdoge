@@ -117,6 +117,47 @@ class TestRoastProfileDetailFunctional(StaticLiveServerTestCase):
         comment_query = models.PointComment.objects.filter(id=newcomment.id)
         self.assertEqual(comment_query.exists(), False)
 
+    def test_select_roastprofile_dropdown(self):
+        """
+        Test that a user can click on the dropdown list of roastprofiles, and that data is 
+        properly rendered in the chart.
+        """
+
+        self.coffee._generate_profile()
+
+        self.selenium.get(
+            '%s%s' % (
+                self.live_server_url, 
+                reverse('roastprofile-detail', args=(self.roastprofile.id,))
+            )
+        )
+
+        generated_rp = models.RoastProfile.objects.exclude(id=self.roastprofile.id).get()
+
+        self.selenium.find_element_by_css_selector(
+            "select#id_roastprofile_select > option[value='%s']" % generated_rp.id
+        ).click()
+
+        time.sleep(1)
+
+        waiting = True
+        timeout = 10
+        count = 0
+        while waiting:
+            try:
+                for index, point in enumerate(generated_rp.temppoint_set.all()):
+                    self.selenium.find_element_by_css_selector(
+                        "g.nv-group.nv-series-1 .nv-point-%s" % index
+                    ).click()
+                waiting = False
+            except NoSuchElementException as e:
+                if count > timeout:
+                    raise e
+                time.sleep(1)
+            count += 1
+        waiting = None
+
+
     def test_record_newprofile(self):
         """
         Test that a user can record a new profile, and that the proper data is grabbed 
@@ -163,9 +204,10 @@ class TestRoastProfileDetailFunctional(StaticLiveServerTestCase):
         count = 0
         while waiting:
             try:
-                for point in new_rp.temppoint_set.all():
+                for index, point in enumerate(new_rp.temppoint_set.all()):
                     self.selenium.find_element_by_css_selector(
-                        "g.nv-group.nv-series-1 .nv-point-%s" % str(int(point.time)-1))
+                        "g.nv-group.nv-series-1 .nv-point-%s" % index
+                    ).click()
                 waiting = False
             except NoSuchElementException as e:
                 if count > timeout:
@@ -173,6 +215,8 @@ class TestRoastProfileDetailFunctional(StaticLiveServerTestCase):
                 time.sleep(1)
             count += 1
         waiting = None
+
+        self.selenium.find_element_by_id("listen-newprofile").click()
 
 
 class TestAjaxViews(TestCase):
