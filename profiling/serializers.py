@@ -6,28 +6,39 @@ import simplejson
 import models
 
 
-class JSONSourceField(serializers.WritableField):
-    """
-    This field serializer is intended to be used on a textfield or jsonfield that
-    stores JSON.  The data stored in this field should already be in JSON, and so 
-    does not need to be modified any further.
-    """
+class PointCommentSerializer(serializers.HyperlinkedModelSerializer):
 
-    def to_native(self, obj):
-        return simplejson.loads(obj)
+    point = serializers.PrimaryKeyRelatedField()
 
-
-class TempPointSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.TempPoint
-        fields = ('temperature', 'time', )
+        model = models.PointComment
+        fields = ('id', 'comment', 'point', )
 
 
 class RoastProfileSerializer(serializers.HyperlinkedModelSerializer):
 
-    temppoint = TempPointSerializer(read_only=True, source="temppoint_set")
-    _graph_data_cache = JSONSourceField(read_only=True, source='_graph_data_cache')
+    temp_graph_data = serializers.SerializerMethodField('get_temp_graph_data')
+
+    def get_temp_graph_data(self, obj):
+        return obj._get_temp_graph_data()
 
     class Meta:
         model = models.RoastProfile
-        fields = ('name', 'date', '_graph_data_cache', 'temppoint',)
+        fields = ('id', 'name', 'date', 'temp_graph_data',)
+
+
+class RoastProfileSimpleSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = models.RoastProfile
+        fields = ('id', 'name', 'date', )
+
+
+class TempPointSerializer(serializers.HyperlinkedModelSerializer):
+
+    roast_profile = serializers.PrimaryKeyRelatedField()
+
+    class Meta:
+        model = models.TempPoint
+        fields = ('id', 'temperature', 'time', 'roast_profile', )
+

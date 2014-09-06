@@ -173,7 +173,7 @@ var updateChartGraphData = function(roastProfileID) {
 
   return setRoastProfileGraphData(roastProfileID)
     .done(function(response) {
-      var graphData = response.graphData;
+      var graphData = response.temp_graph_data;
       var seriesCount = Object.keys(lineChartVis.seriesMap).length
       
       var dataAlreadyPresent = (roastProfileID in lineChartVis.seriesMap)

@@ -1,21 +1,72 @@
 # Django
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.http import JsonResponse
 from django.shortcuts import Http404, HttpResponseRedirect, HttpResponse, render
+from django.template.loader import render_to_string
 from django.views import generic
 
 # Ours
+import forms
 import models
 import serializers
 
 # Third Party
 from rest_framework import viewsets
+from rest_framework.decorators import detail_route, list_route
+
+
+class PointCommentViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows for pointcomments to be viewed or edited.
+    """
+
+    queryset = models.PointComment.objects.all()
+    serializer_class = serializers.PointCommentSerializer
+
+    @detail_route(methods=['delete'])
+    def delete_and_respond(self, request, pk=None):
+        """
+        Method to delete a comment, and return JSON containing 
+        to the comment's ID, and whether or not the temppoint 
+        has any remaining comments.
+        """
+
+        pointcomment = models.PointComment.objects.get(id=pk)
+        point = pointcomment.point
+        pointcomment.delete()
+        has_comments = point.pointcomment_set.all().exists()
+
+        return JsonResponse({'deletedCommentID':pk, 'hasComments': has_comments})
+
+    @list_route(methods=['get'])
+    def get_form(self, request, pk=None):
+        """
+        Method to get a new comment form, and all previous comments for a given 
+        temppoint.
+        """
+
+        temppoint_id = request.GET.get('id')
+
+        temppoint = models.TempPoint.objects.get(id=temppoint_id)
+        form = forms.PointCommentForm(data={'point':temppoint_id})
+        comments = temppoint.pointcomment_set.all().order_by('created')
+
+        data = render_to_string('_includes/forms/point_comment_form.jade', {
+            'point':temppoint,
+            'form':form,
+            'comments': comments,
+            }
+        )
+
+        return JsonResponse({'data':data})
 
 
 class RoastProfileViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows roastprofiles to be viewed or edited.
     """
+
     queryset = models.RoastProfile.objects.all()
     serializer_class = serializers.RoastProfileSerializer
 
@@ -24,6 +75,7 @@ class TempPointViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows temppoints to be viewed or edited.
     """
+
     queryset = models.TempPoint.objects.all()
     serializer_class = serializers.TempPointSerializer
 

@@ -54,19 +54,13 @@ function RoastProfile(options) {
     self._validateCRUD('getGraphData')
     
     return $.ajax({
-      url: self.crudURL.getRoastProfileGraphData,
+      url: self.crudURL.list + self.id,
       type: 'GET',
-      data: {
-        'roastProfileID': self.id,
-      },
+      data: {},
       dataType: 'json',
       success: function(response) {
 
-        self.graphData = response.graphData
-
-        // response = {
-        //     'graphData': roastprofile.get_temp_graph_data()
-        // }
+        self.graphData = response.temp_graph_data
 
       },
       error: function(jqXHR, textStatus, errorThrown ) {

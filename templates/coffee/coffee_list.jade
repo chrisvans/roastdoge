@@ -24,7 +24,6 @@ ul
 {% endblock content %}
 
 {% block javascripts %}
-// TODO: This script should be an include. with object=object?
 script
   var objectListURL = "{% url 'rest-'|add:object_label|add:'-list' %}";
 

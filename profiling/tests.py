@@ -11,10 +11,12 @@ import factories
 import models
 import ajax
 import forms
+import views
 
 # Third Party
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import ui
+from rest_framework.test import APIRequestFactory
 
 # Python
 import time
@@ -118,6 +120,7 @@ class TestAjaxViews(TestCase):
         self.coffee._generate_profile()
         self.roastprofile = self.coffee.roastprofile_set.all()[0]
         self.request_factory = RequestFactory()
+        self.api_request_factory = APIRequestFactory()
 
     def tearDown(self):
         self.coffee.delete()
@@ -128,12 +131,15 @@ class TestAjaxViews(TestCase):
         """
 
         some_temppoint = self.roastprofile.temppoint_set.all()[0]
-        request = self.request_factory.get(
-            reverse('ajax-temppoint-comment-create-form'), 
-            {'TempPointID': some_temppoint.id }
+        request = self.api_request_factory.get(
+            reverse('rest-pointcomment-get-form'), 
+            {'id': some_temppoint.id }
         )
 
-        response = ajax.temppoint_comment_create_form(request)
+        view = views.PointCommentViewSet.as_view(actions={'get':'get_form'})
+
+        response = view(request, pk=some_temppoint.id)
+
         data = render_to_string(
             '_includes/forms/point_comment_form.jade',
             {
@@ -154,42 +160,44 @@ class TestAjaxViews(TestCase):
 
         some_temppoint = self.roastprofile.temppoint_set.all()[0]
         comment = 'I made a comment dood'
-        request = self.request_factory.post(
-            reverse('ajax-temppoint-comment-create'),
-            {
-                'TempPointID': some_temppoint.id,
-                'comment': comment,
-            }
+
+        request = self.api_request_factory.post(
+            reverse('rest-pointcomment-list',),
+            {'point':some_temppoint.id, 'comment': comment},
         )
 
-        response = ajax.temppoint_comment_create(request)
+        view = views.PointCommentViewSet.as_view(actions={'post':'create'})
+        response = view(request)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         comment_queryset = models.PointComment.objects.filter(point__id=some_temppoint.id, comment=comment)
         self.assertEqual(comment_queryset.exists(), True)
         self.assertEqual(comment_queryset.count(), 1)
 
     def test_comment_delete(self):
         """
-        Test that this view deletes a PointComment based on it's ID.
+        Test that this view deletes a PointComment based on it's ID, and returns appropriate data 
+        for the JavaScript to use.
         """
 
         some_temppoint = self.roastprofile.temppoint_set.all()[0]
         pointcomment = factories.PointCommentFactory.create(point=some_temppoint, comment="Hay")
 
-        request = self.request_factory.post(
-            reverse('ajax-comment-delete'),
-            {
-                'TempPointID':some_temppoint.id,
-                'commentID':pointcomment.id    
-            }
+        request = self.api_request_factory.delete(
+            reverse(
+                'rest-pointcomment-delete-and-respond',
+                kwargs={'pk':pointcomment.id},
+            )
         )
 
         self.assertEqual(models.PointComment.objects.filter(id=pointcomment.id).exists(), True)
 
-        response = ajax.comment_delete(request)
+        view = views.PointCommentViewSet.as_view(actions={'delete':'delete_and_respond'})
+
+        response = view(request, pk=pointcomment.id)
 
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, '{"deletedCommentID": %s, "hasComments": false}' % pointcomment.id)
         self.assertEqual(models.PointComment.objects.filter(id=pointcomment.id).exists(), False)
 
     def test_roastprofile_create(self):
@@ -215,16 +223,20 @@ class TestAjaxViews(TestCase):
         Test that this view delete's a RoastProfile based on it's ID.
         """
 
-        request = self.request_factory.post(
-            reverse('ajax-roastprofile-delete'),
-            {'RoastProfileID': self.roastprofile.id}
+        request = self.api_request_factory.delete(
+            reverse(
+                'rest-roastprofile-detail',
+                kwargs={'pk': self.roastprofile.id}
+            )
         )
 
         self.assertEqual(self.coffee.roastprofile_set.all().count(), 1)
 
-        response = ajax.roastprofile_delete(request)
+        view = views.RoastProfileViewSet.as_view(actions={'delete':'destroy'})
 
-        self.assertEqual(response.status_code, 200)
+        response = view(request, pk=self.roastprofile.id)
+
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(self.coffee.roastprofile_set.all().exists(), False)
 
     def test_roastprofile_graph_data(self):
@@ -233,17 +245,21 @@ class TestAjaxViews(TestCase):
         a JSON encoded form of a RoastProfile's get_temp_graph_data method.
         """
 
-        request = self.request_factory.get(
-            reverse('ajax-roastprofile-graph-data'),
-            {'roastProfileID': self.roastprofile.id}
+        request = self.api_request_factory.get(
+            reverse(
+                'rest-roastprofile-detail',
+                kwargs={'pk': self.roastprofile.id}
+            )
         )
 
-        response = ajax.roastprofile_graph_data(request)
+        view = views.RoastProfileViewSet.as_view(actions={'get':'retrieve'})
+
+        response = view(request, pk=self.roastprofile.id)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.content,
-            JsonResponse({'graphData':self.roastprofile._get_temp_graph_data()}).content
+            response.data['temp_graph_data'], 
+            self.roastprofile._get_temp_graph_data()
         )
 
     def test_roastprofile_graph_data_slice(self):

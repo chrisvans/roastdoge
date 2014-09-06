@@ -58,14 +58,12 @@ script
   var crudURL = {
     'roastProfile': {
       'create': "{% url 'ajax-roastprofile-create' %}",
-      'getRoastProfileGraphData': "{% url 'ajax-roastprofile-graph-data' %}",
+      'list': "{% url 'rest-roastprofile-list' %}",
       'getRoastProfileGraphDataSlice': "{% url 'ajax-roastprofile-graph-data-slice' %}",
     },
     'tempPoint': {
-      'commentCreateForm': "{% url 'ajax-temppoint-comment-create-form' %}",
-      'commentUpdate': "{% url 'ajax-comment-update' %}",
-      'commentCreate': "{% url 'ajax-temppoint-comment-create' %}",
-      'commentDelete': "{% url 'ajax-comment-delete' %}",
+      'commentCreateForm': "{% url 'rest-pointcomment-get-form' %}",
+      'commentList': "{% url 'rest-pointcomment-list' %}",
       'commentIcon': "{% static 'svg_icons/comment2.svg' %}",
     },
   }

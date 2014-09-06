@@ -13,5 +13,4 @@ urlpatterns = patterns('',
     ),
     url(r'^create/$', views.GreenCoffeeCreate.as_view(), name='greencoffee-new'),
     url(r'^blend/create/$', views.CoffeeCreate.as_view(), name='coffee-new'),
-    url(r'^delete/$', ajax.coffee_delete, name='ajax-coffee-delete'),
 )

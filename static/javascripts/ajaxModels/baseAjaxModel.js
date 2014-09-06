@@ -71,13 +71,10 @@ function BaseAjaxModel(options) {
 
     self._validateDelete()
 
-    var data = {}
-    data[self.modelName + 'ID'] = self.id
-
     return $.ajax({
       url: self.crudURL.delete,
-      type: 'POST',
-      data: data,
+      type: 'DELETE',
+      data: {'id':self.id},
       dataType: 'json',
       success: function(response) {
 

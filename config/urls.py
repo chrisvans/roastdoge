@@ -19,12 +19,12 @@ urlpatterns = patterns(
     url(r'^coffee/', include('coffee.urls')),
 )
 
-# TODO: Move into main URL file
 # DJANGO REST FRAMEWORK
 
 router = routers.DefaultRouter()
 router.register(r'roastprofile', profiling.views.RoastProfileViewSet, base_name='rest-roastprofile')
 router.register(r'temppoint', profiling.views.TempPointViewSet, base_name='rest-temppoint')
+router.register(r'pointcomment', profiling.views.PointCommentViewSet, base_name='rest-pointcomment')
 router.register(r'coffee', coffee.views.CoffeeViewSet, base_name='rest-coffee')
 
 # Wire up our API using automatic URL routing.

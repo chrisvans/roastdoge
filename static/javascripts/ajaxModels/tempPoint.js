@@ -75,10 +75,10 @@ function TempPointModel(options) {
     var comment = $(inputElementSelector).val();
 
     return $.ajax({
-      url: self.crudURL.commentCreate,
+      url: self.crudURL.commentList,
       type: 'POST',
       data: {
-        'TempPointID': self.id,
+        'point': self.id,
         'comment': comment,
       },
       dataType: 'json',
@@ -99,12 +99,9 @@ function TempPointModel(options) {
   self.commentDelete = function(commentID) {
     
     return $.ajax({
-      url: self.crudURL.commentDelete,
-      type: 'POST',
-      data: {
-        'TempPointID': self.id,
-        'commentID': commentID,
-      },
+      url: self.crudURL.commentList+commentID+'/delete_and_respond/',
+      type: 'DELETE',
+      data: {},
       dataType: 'json',
       success: function(response) {
 
@@ -128,7 +125,7 @@ function TempPointModel(options) {
       url: self.crudURL.commentCreateForm,
       type: 'GET',
       data: { 
-        'TempPointID': self.id,
+        'id': self.id,
       },
       dataType: 'json',
       statusCode: {

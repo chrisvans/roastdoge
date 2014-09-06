@@ -24,28 +24,6 @@ urlpatterns = patterns('',
     ),
 
     # Ajax
-    url(
-        r'^temppoint/comment/create-form/$', 
-        ajax.temppoint_comment_create_form, 
-        name='ajax-temppoint-comment-create-form'
-    ),
-    url(
-        r'^temppoint/comment/create/$',
-        ajax.temppoint_comment_create,
-        name='ajax-temppoint-comment-create'
-    ),
-    url(r'^temppoint/comment/update/$',
-        ajax.comment_update,
-        name='ajax-comment-update'
-    ),
-    url(r'^temppoint/comment/delete/$',
-        ajax.comment_delete,
-        name='ajax-comment-delete'
-    ),
-    url(r'^roastprofile/temppoint/get-graph-data/$',
-        ajax.roastprofile_graph_data,
-        name='ajax-roastprofile-graph-data'
-    ),
     url(r'^roastprofile/temppoint/get-graph-data-slice/$',
         ajax.roastprofile_graph_data_slice,
         name='ajax-roastprofile-graph-data-slice'
@@ -53,10 +31,6 @@ urlpatterns = patterns('',
     url(r'^roastprofile/create/$',
         ajax.roastprofile_create,
         name='ajax-roastprofile-create'
-    ),
-    url(r'^roastprofile/delete/$',
-        ajax.roastprofile_delete,
-        name='ajax-roastprofile-delete'
     ),
 )
 
