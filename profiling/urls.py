@@ -22,15 +22,5 @@ urlpatterns = patterns('',
         views.roastprofile_temppoint_create, 
         name='roastprofile-temppoint-create'
     ),
-
-    # Ajax
-    url(r'^roastprofile/temppoint/get-graph-data-slice/$',
-        ajax.roastprofile_graph_data_slice,
-        name='ajax-roastprofile-graph-data-slice'
-    ),
-    url(r'^roastprofile/create/$',
-        ajax.roastprofile_create,
-        name='ajax-roastprofile-create'
-    ),
 )
 

@@ -127,16 +127,18 @@ class TempPoint(models.Model):
 
     # TODO: Save this as a field on .save(), rather than processing on every str/uni eval.
     def __unicode__(self):
-        return '%s %s' % (self.time, self.temperature)        
-        # if self.roast_profile.coffee:
-        #     return u'%s - %s - %s - %s' % (
-        #         self.roast_profile.coffee.name, 
-        #         self.roast_profile, 
-        #         unicode(self.time), 
-        #         self.temperature
-        #     )
-        # else:
-        #     return u'%s - %s - %s' % (self.roast_profile, unicode(self.time), self.temperature)
+        return '%s %s' % (self.time, self.temperature)
+
+    def get_detail_info(self):        
+        if self.roast_profile.coffee:
+            return u'%s - %s - %s - %s' % (
+                self.roast_profile.coffee.name, 
+                self.roast_profile, 
+                unicode(self.time), 
+                self.temperature
+            )
+        else:
+            return u'%s - %s - %s' % (self.roast_profile, unicode(self.time), self.temperature)
 
     def save(self, *args, **kwargs):
 

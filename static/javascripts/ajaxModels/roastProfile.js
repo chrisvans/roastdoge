@@ -25,20 +25,17 @@ function RoastProfile(options) {
     self._validateCreate()
 
     return $.ajax({
-      url: self.crudURL.create,
+      url: self.crudURL.list,
       type: 'POST',
       data: {
-        'coffeeID': self.coffeeID,
+        'name': 'New Profile',
+        'coffee': self.coffeeID,
       },
       dataType: 'json',
       success: function(response) {
         
-        self.id = response.RoastProfileID;
-
-        // response = {
-        //     'RoastProfileID': roastprofile.id,
-        //     'roastProfileGraphData': roastprofile.get_temp_graph_data(),
-        // }
+        self.id = response.id;
+        self.graphData = response.temp_graph_data;
 
       },
       error: function(jqXHR, textStatus, errorThrown ) {
@@ -77,10 +74,10 @@ function RoastProfile(options) {
     self._validateCRUD('getGraphDataSlice')
 
     return $.ajax({
-      url: self.crudURL.getRoastProfileGraphDataSlice,
+      url: self.crudURL.getGraphDataSlice,
       type: 'GET',
       data: {
-        'roastProfileID': self.id,
+        'id': self.id,
         'sliceStart': sliceStart,
       },
       dataType: 'json',

@@ -57,9 +57,8 @@ script
 
   var crudURL = {
     'roastProfile': {
-      'create': "{% url 'ajax-roastprofile-create' %}",
       'list': "{% url 'rest-roastprofile-list' %}",
-      'getRoastProfileGraphDataSlice': "{% url 'ajax-roastprofile-graph-data-slice' %}",
+      'getGraphDataSlice': "{% url 'rest-roastprofile-get-graph-data-slice' %}",
     },
     'tempPoint': {
       'commentCreateForm': "{% url 'rest-pointcomment-get-form' %}",

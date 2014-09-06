@@ -29,10 +29,11 @@ function BaseAjaxModel(options) {
   self.id = self.setAttrOrNull(options.id)
   // All CRUD methods are reliant on a set of URLs, which should at least have the following:
   // {
-  // 'create':url,
+  // 'list':url,
+  // 'create':list-url,
   // 'delete':url,
-  // 'read':url, # Not Implemented
-  // 'update':url # Not Implemented
+  // 'read':list-url+id, # Not Implemented
+  // 'update':list-url+id # Not Implemented
   // }
   self.crudURL = self.setAttrOrNull(options.crudURL)
 
@@ -48,14 +49,13 @@ function BaseAjaxModel(options) {
     self._validateCreate()
 
     return $.ajax({
-      url: self.crudURL.create,
+      url: self.crudURL.list,
       type: 'POST',
-      data: {
-      },
+      data: {},
       dataType: 'json',
       success: function(response) {
 
-      	self.id = response[self.modelName+'ID']
+      	self.id = response.id
 
       },
       error: function(jqXHR, textStatus, errorThrown ) {
@@ -118,7 +118,7 @@ function BaseAjaxModel(options) {
 
     self._validateCRUD('create')
 
-    if (typeof(self.crudURL.create) === 'undefined') {
+    if ((typeof(self.crudURL.create) === 'undefined') && (typeof(self.crudURL.list) === 'undefined')) {
       throw self.validationError('create', 'Method was attempted with no crudURL.create attribute set.')
     }
   }

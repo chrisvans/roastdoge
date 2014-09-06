@@ -14,6 +14,7 @@ import serializers
 # Third Party
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
+import simplejson
 
 
 class PointCommentViewSet(viewsets.ModelViewSet):
@@ -69,6 +70,26 @@ class RoastProfileViewSet(viewsets.ModelViewSet):
 
     queryset = models.RoastProfile.objects.all()
     serializer_class = serializers.RoastProfileSerializer
+
+    @list_route(methods=['get'])
+    def get_graph_data_slice(self, request, pk=None):
+
+        roastprofile = models.RoastProfile.objects.get(id=request.GET.get('id'))
+
+        slice_start = request.GET.get('sliceStart')
+
+        def get_lastslice_or_zero():
+            if roastprofile.temppoint_set.all().exists():
+                return roastprofile.temppoint_set.all().order_by('-time')[0].time
+            else:
+                return 0
+
+        data = {
+            'graphDataValues': roastprofile.get_temp_graph_data_slice(slice_start),
+            'lastSlice': get_lastslice_or_zero(),
+        }
+
+        return JsonResponse(data)
 
 
 class TempPointViewSet(viewsets.ModelViewSet):

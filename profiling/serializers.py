@@ -17,6 +17,8 @@ class PointCommentSerializer(serializers.HyperlinkedModelSerializer):
 
 class RoastProfileSerializer(serializers.HyperlinkedModelSerializer):
 
+    coffee = serializers.PrimaryKeyRelatedField()
+    date = serializers.DateTimeField(read_only=True)
     temp_graph_data = serializers.SerializerMethodField('get_temp_graph_data')
 
     def get_temp_graph_data(self, obj):
@@ -24,14 +26,7 @@ class RoastProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.RoastProfile
-        fields = ('id', 'name', 'date', 'temp_graph_data',)
-
-
-class RoastProfileSimpleSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = models.RoastProfile
-        fields = ('id', 'name', 'date', )
+        fields = ('id', 'coffee', 'name', 'date', 'temp_graph_data',)
 
 
 class TempPointSerializer(serializers.HyperlinkedModelSerializer):
