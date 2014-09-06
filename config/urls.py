@@ -31,7 +31,8 @@ router.register(r'coffee', coffee.views.CoffeeViewSet, base_name='rest-coffee')
 # Additionally, we include login URLs for the browseable API.
 urlpatterns += patterns('',
     url(r'^api/', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/docs/', include('rest_framework_swagger.urls')),
 )
 
 urlpatterns += staticfiles_urlpatterns()

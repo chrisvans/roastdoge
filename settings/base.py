@@ -39,12 +39,13 @@ APPS = (
     'coffee',
     'profiling',
     'object_utils',
-    'rest_framework',
 )
 
 THIRD_PARTY_APPS = (
     'psycopg2',
     'django_extensions',
+    'rest_framework',
+    'rest_framework_swagger',
 )
 
 INSTALLED_APPS = DJANGO_APPS + APPS + THIRD_PARTY_APPS

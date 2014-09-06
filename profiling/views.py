@@ -31,6 +31,12 @@ class PointCommentViewSet(viewsets.ModelViewSet):
         Method to delete a comment, and return JSON containing 
         to the comment's ID, and whether or not the temppoint 
         has any remaining comments.
+
+        JsonResponse:
+            {
+                'deletedCommentID':pk, 
+                'hasComments': point.pointcomment_set.all().exists()
+            }
         """
 
         pointcomment = models.PointComment.objects.get(id=pk)
@@ -73,6 +79,15 @@ class RoastProfileViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def get_graph_data_slice(self, request, pk=None):
+        """
+        API endpoint that allows a slice of a roastprofile's graph data to be grabbed.
+
+        GET: 
+            'sliceStart': A number corresponding to the time to start the slice from.
+
+        Currently only supports slicing from a certain point all the way to the end.  There 
+        is no 'sliceEnd' implementation.
+        """
 
         roastprofile = models.RoastProfile.objects.get(id=request.GET.get('id'))
 
