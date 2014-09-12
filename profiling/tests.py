@@ -83,7 +83,8 @@ class TestRoastProfileDetailFunctional(StaticLiveServerTestCase):
         comment = models.PointComment.objects.filter(comment='My Comment')
         self.assertEqual(comment.exists(), True)
 
-        # TODO: Test that the comment svg is properly created and placed on the chart.
+        # Test that the comment svg is properly created and placed on the chart.
+        self.selenium.find_element_by_css_selector(".svg-comment-icon")
 
     def test_comment_form_delete(self):
         """

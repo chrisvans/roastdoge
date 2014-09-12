@@ -77,6 +77,23 @@ class RoastProfileViewSet(viewsets.ModelViewSet):
     queryset = models.RoastProfile.objects.all()
     serializer_class = serializers.RoastProfileSerializer
 
+    @detail_route(methods=['get'])
+    def get_name_form(self, request, pk=None):
+        """
+        Method to get a name field form.
+        """
+        roastprofile_id = request.GET.get('id')
+        coffee_id = request.GET.get('coffeeID')
+
+        form = forms.RoastProfileForm(data={'id':roastprofile_id, 'coffee':coffee_id})
+
+        data = render_to_string(
+            '_includes/forms/roast_profile_name_form.jade', 
+            { 'form': form }
+        )
+
+        return JsonResponse({'data':data})
+
     @list_route(methods=['get'])
     def get_graph_data_slice(self, request, pk=None):
         """

@@ -61,7 +61,8 @@ function lineChartVisualization(options) {
     nv.addGraph(function() {
       self.nvchart = nv.models.lineChart()
         .color(d3.scale.category10().range())
-        .showLegend(false);
+        .showLegend(false)
+        .interpolate('monotone');
 
       self.nvchart.x(function(d,i) { 
         var time = new Date(d.x)

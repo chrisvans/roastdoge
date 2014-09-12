@@ -50,7 +50,7 @@ var pointIconCallback = function(visualization) {
                 .attr("y", (parseInt(thisCircle.attr('cy')) - iconSize).toString())
                 .attr("width", iconSize)
                 .attr("height", iconSize)
-                // Give it a unique id that matched the temppoint's ID, so we can dynamically select it later
+                // Give it a unique id that matches the temppoint's ID, so we can dynamically select it later
                 // Used for when a temppoint has all of it's comments deleted, and needs to tell this node
                 // to remove this comment icon.
                 .attr("class", "svg-comment-icon temppoint_" + d[i].id);
