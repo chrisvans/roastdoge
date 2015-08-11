@@ -137,6 +137,13 @@ def index(request):
 	return render(request, 'index.jade')
 
 
+class RoastTestDetail(generic.DetailView):
+
+    template_name = "profiling/roastprofile_test.jade"
+    model = models.RoastProfile
+    pk_url_kwarg = 'roastprofile_id' 
+
+
 class RoastProfileDetail(generic.DetailView):
     """
     Responsible for showing a single roast profile's information 

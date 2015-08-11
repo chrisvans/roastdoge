@@ -5,20 +5,20 @@ import datetime
 import random
 
 
-class GreenCoffee(models.Model):
-    name = models.CharField(max_length=255, null=False, unique=True)
-    country = models.CharField(max_length=255, null=True, blank=False)
-    region = models.CharField(max_length=255, null=True, blank=True)
-    farm = models.CharField(max_length=255, null=True, blank=True)
-    varietal = models.CharField(max_length=255, null=True, blank=True)
-    harvest_date = models.DateTimeField(default=datetime.datetime.now)
-    description = models.TextField(null=True, blank=True)
+# class GreenCoffee(models.Model):
+#     name = models.CharField(max_length=255, null=False, unique=True)
+#     country = models.CharField(max_length=255, null=True, blank=False)
+#     region = models.CharField(max_length=255, null=True, blank=True)
+#     farm = models.CharField(max_length=255, null=True, blank=True)
+#     varietal = models.CharField(max_length=255, null=True, blank=True)
+#     harvest_date = models.DateTimeField(default=datetime.datetime.now)
+#     description = models.TextField(null=True, blank=True)
 
-    def __unicode__(self):
-        return u'%s - %s' % (
-            unicode(self.harvest_date), 
-            self.name,
-        )
+#     def __unicode__(self):
+#         return u'%s - %s' % (
+#             unicode(self.harvest_date), 
+#             self.name,
+#         )
 
 
 class Coffee(models.Model):

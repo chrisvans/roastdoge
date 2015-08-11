@@ -13,6 +13,11 @@ urlpatterns = patterns('',
         name='roastprofile-detail'
     ),
     url(
+        r'^profiles/(?P<roastprofile_id>\d+)/test$',
+        views.RoastTestDetail.as_view(),
+        name='roastprofile-test'
+    ),
+    url(
         r'^profiles/(?P<roastprofile_id>\d+)/delete/$', 
         views.roastprofile_deleteview, 
         name='roastprofile-delete'
